@@ -12,35 +12,30 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
-h2 {
+h1 {
     text-align: center;
 }
 
-
-
-#wrap {
+.wrap {
     width: 80%;
     position: absolute;
-    top: 10%;
+    top: 15%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
 
-
-
-#table {
-  /* width: 40%;
-  left: 30%; */
+.command-table {
+  width: 80%;
   margin: auto;
   margin-top: 50px;
   position: relative
 }
 
-#frame {
-  width: 90%;
-  height: 75%;
-  position: absolute;
-  transform: translate(5%, 0%);
-  top: 20%;
-  border:1px solid lightgrey;
+.command {
+    text-align: center;
+    height: 70px;
+}
+
+.check {
+    display: none;
 }
