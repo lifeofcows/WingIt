@@ -5,9 +5,9 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class GenreAnalyzer extends NaiveBayes {
+public class WingAnalyzer extends NaiveBayes {
 	
-	public static final ArrayList<String> GENRES = new ArrayList<String>(Arrays.asList("comedy", "thriller", "romance", "action", "drama"));
+	public static final ArrayList<String> WINGS = new ArrayList<String>(Arrays.asList("left", "neutral", "right"));
 	private static final int NUM_THREADS = 3;
 	
 	private ArrayDeque<WebPage> webpages;
@@ -15,8 +15,8 @@ public class GenreAnalyzer extends NaiveBayes {
 	/*
 	 * Description: this class implements the Naive Bayes algorithm with the purpose of calculating movie genres
 	 */
-	public GenreAnalyzer() {
-		super(GENRES);
+	public WingAnalyzer() {
+		super(WINGS);
 	}
 	
 	/*

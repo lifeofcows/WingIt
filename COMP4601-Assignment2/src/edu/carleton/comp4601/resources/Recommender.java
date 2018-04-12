@@ -22,8 +22,7 @@ public class Recommender {
 
 	String name, authorName1, authorName2;
 	CrawlerController controller;
-	GenreAnalyzer genreAnalyzer;
-	SentimentAnalyzer sentimentAnalyzer;
+	WingAnalyzer genreAnalyzer;
 
 	/*
 	 * Description: constructor for the recommender class
@@ -62,7 +61,7 @@ public class Recommender {
 		try {
 			controller = new CrawlerController(dir);
 			controller.crawl();
-			genreAnalyzer = new GenreAnalyzer();
+			genreAnalyzer = new WingAnalyzer();
 			genreAnalyzer.analyze();
 		} catch (Exception e) {
 			System.err.println("Error crawling data in dir: " + dir);
@@ -82,46 +81,16 @@ public class Recommender {
 	@Produces(MediaType.TEXT_HTML)
 	public String context() {
 		System.out.println("context");
-		sentimentAnalyzer = new SentimentAnalyzer();
-		sentimentAnalyzer.analyze();
+//		sentimentAnalyzer = new SentimentAnalyzer();
+//		sentimentAnalyzer.analyze();
 				
 		String res = "<div>Context</div> <table border='1px'> ";
-		res += User.htmlTableHeader();
-		for (User user : sentimentAnalyzer.getAnalyzedUsers()) {
-			res += user.htmlTableData();
-		}
+//		res += User.htmlTableHeader();
+//		for (User user : sentimentAnalyzer.getAnalyzedUsers()) {
+//			res += user.htmlTableData();
+//		}
 		res += "</table>";
 		return wrapHTML("Context", res);
-	}
-	
-	/*
-	 * Description: visual representation of users grouped into their communities based on their preferred genre
-	 * Input: None
-	 * Return: an HTML representation of users grouped into their communities based on their preferred genre
-	 */
-	@GET
-	@Path("community")
-	@Produces(MediaType.TEXT_HTML)
-	public String community() {
-		System.out.println("community");
-		String res = "<div>Community</div> <table border>";
-		for (String genre : GenreAnalyzer.GENRES) {
-			String usersInCommunity = "";
-			ArrayList<User> users = Database.getInstance().getUsersByPreferredGenre(genre);
-			if (users.size() == 0) {
-				res += "</table>Error: please run /context first!";
-				return wrapHTML("Community", res);
-			}
-			else {
-				for (User user : users) { 
-					usersInCommunity += "<a href=" + user.getUrl() + ">" + user.getName() + "</a>, ";
-				}
-				res += "<tr> <td> " + genre + " </td> <td> " + usersInCommunity.substring(0, usersInCommunity.length() - 2) + " </td> </tr>";	
-			}
-		}
-		res += " </table>";
-		
-		return wrapHTML("Community", res);
 	}
 	
 	/*
@@ -142,41 +111,6 @@ public class Recommender {
 		}
 		res += " </table>";
 		return wrapHTML("Fetch", res);
-	}
-	
-	/*
-	 * Description: fetches a particular page from the point of view of a particular user
-	 * Input: the user accessing the page, the page to access
-	 * Return: html representation of the page, augmented with ads relevant to the user and the page
-	 */
-	@GET
-	@Path("fetch/{user}/{page}")
-	@Produces(MediaType.TEXT_HTML)
-	public String fetch(@PathParam("user") String user, @PathParam("page") String page) {
-		System.out.println("fetch -> " + user + ", " + page);
-		String res = Advertiser.augment(user, page);
-		System.out.println(res);
-		return res;
-	}
-	
-	/*
-	 * Description: shows the advertisements for a given category
-	 * Input: Category as a string
-	 * Return: html representation that gives advertising for the category (if exists)
-	 */
-	@GET
-	@Path("advertising/{category}")
-	@Produces(MediaType.TEXT_HTML)
-	public String advertising(@PathParam("category") String category) {
-		System.out.println("advertising -> " + category);
-		String res;
-		if (GenreAnalyzer.GENRES.contains(category.toLowerCase())) {
-			res = "Advertising for " + category;
-		}
-		else {
-			res = "Invalid genre " + category;
-		}
-		return wrapHTML("Advertising", res);
 	}
 	
 	/*

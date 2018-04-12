@@ -11,12 +11,10 @@ public class WebPage {
 	/*
 	 * Description: a webpage is a representation of a page containing reviews for a particular movie
 	 */
-	public WebPage(int docId, String name, String url, HashSet<String> users, String genre, String content, String html) {
+	public WebPage(int docId, String name, String url, String content, String html) {
 		this.docId = docId;
 		this.name = name;
 		this.url = url;
-		this.users = users;
-		this.genre = genre;
 		this.content = content;
 		this.html = html;
 	}
@@ -92,6 +90,8 @@ public class WebPage {
 	public String getHTML() {
 		return html;
 	}
+	
+	
 	
 	/*
 	 * Description: constructs an html table representation of the data in this class

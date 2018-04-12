@@ -77,31 +77,16 @@ public class Crawler extends WebCrawler {
 			Set<WebURL> outgoingUrls = htmlParseData.getOutgoingUrls();
 			ArrayList<String> links = new ArrayList<String>();
 			for (WebURL webUrl : outgoingUrls) {
-				links.add(webUrl.getAnchor());
+				//links.add(webUrl.getAnchor());
 			}
 
 			int docId = page.getWebURL().getDocid();
-			if (url.contains("pages")) {
-				if (title != "" && !title.contains(" ")) {
-					System.out.println("Adding webpage");
-					//html = modifyHTMLLinks(html);
-					String genre = null;
-					WebPage webPage = new WebPage(docId, title, url, getUsersFromLinks(links), genre, content, html); 
-					Database.getInstance().insert(webPage);
-				}
-			} else if (url.contains("users")) {
-				if (title != "" && !title.contains(" ")) {
-					System.out.println("Adding user");
-					String preferredGenre = null;
-					HashMap<String, BigDecimal> sentimentScores = new HashMap<String, BigDecimal>();
-					for (String genre : GenreAnalyzer.GENRES) {
-						sentimentScores.put(genre, BigDecimal.valueOf(0));
-					}
-					User user = new User(docId, title, url, preferredGenre, links, sentimentScores);
-					Database.getInstance().insert(user);
-				}
-			} else {
-				System.out.println("Failed to classify crawled webpage");
+			if (title != "") {
+				System.out.println("Adding webpage");
+				//html = modifyHTMLLinks(html);
+				String genre = null;
+				WebPage webPage = new WebPage(docId, title, url, content, html); 
+				Database.getInstance().insert(webPage);
 			}
 			
 			// Output for debugging purposes
@@ -109,21 +94,5 @@ public class Crawler extends WebCrawler {
 			System.out.println("Html length: " + html.length());
 			System.out.println("Number of outgoing links: " + outgoingUrls.size());
 		}
-	}
-	
-	/*
-	 * Description: filters out users from the list provided to ensure that all users actually exist in the database
-	 * Input: the list of users to filter
-	 * Return: the filtered list of users
-	 */
-	public HashSet<String> getUsersFromLinks(ArrayList<String> users) {
-		HashSet<String> validUsers = new HashSet<String>(); 
-		for (String user : users) {
-			if (Database.getInstance().getUser(user, false) != null) { //if user text is in database then confirm as real user
-				validUsers.add(user);
-			}
-		}
-		
-		return validUsers;
 	}
 }
