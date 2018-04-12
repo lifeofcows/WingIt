@@ -5,7 +5,9 @@ import java.util.Arrays;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
@@ -43,11 +45,11 @@ public class Recommender {
 	 * Return: html representation of the name
 	 */
 	@GET
-	@Produces(MediaType.TEXT_HTML)
+	@Produces(MediaType.APPLICATION_JSON)
 	public String getName() {
 		System.out.println("name");
-		String res = "<h1> " + name + " </h1>";
-		return wrapHTML(name, res);
+		String res = "{\"name\": \"" + name + "\"}";
+		return res;
 	}
 
 	/*
@@ -56,21 +58,28 @@ public class Recommender {
 	 * Return: 200 response code if successful, 500 otherwise
 	 */
 	@GET
-	@Path("reset/")
-	public Response reset() {
+	@Path("admin")
+	public Response admin(@QueryParam("adminRequest") String adminRequest) {
+		System.out.println("admin -> " + adminRequest);
 		Response res = Response.ok().build();
-		for (String site : newsSites) {
-			try {
-				controller = new CrawlerController(site);
-				controller.crawl();
-			} catch (Exception e) {
-				System.err.println("Error crawling data with site: " + site);
-				e.printStackTrace();
-				res = Response.serverError().build();
-			}
+		switch (adminRequest) {
+			case "reset":
+				for (String site : newsSites) {
+					try {
+						controller = new CrawlerController(site);
+//						controller.crawl();
+					} catch (Exception e) {
+						System.err.println("Error crawling data with site: " + site);
+						e.printStackTrace();
+						res = Response.serverError().build();
+					}
+				}
+//				genreAnalyzer = new WingAnalyzer();
+//				genreAnalyzer.analyze();
+				break;
+			default:
+				res = Response.noContent().build();
 		}
-		genreAnalyzer = new WingAnalyzer();
-		genreAnalyzer.analyze();
 		return res;
 	}
 	
@@ -80,20 +89,12 @@ public class Recommender {
 	 * Return: html representation of the users and the fields used for community calculation
 	 */
 	@GET
-	@Path("context")
-	@Produces(MediaType.TEXT_HTML)
-	public String context() {
-		System.out.println("context");
-//		sentimentAnalyzer = new SentimentAnalyzer();
-//		sentimentAnalyzer.analyze();
-				
-		String res = "<div>Context</div> <table border='1px'> ";
-//		res += User.htmlTableHeader();
-//		for (User user : sentimentAnalyzer.getAnalyzedUsers()) {
-//			res += user.htmlTableData();
-//		}
-		res += "</table>";
-		return wrapHTML("Context", res);
+	@Path("url")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String url(@QueryParam("url") String url) {
+		System.out.println("url -> " + url);
+		String res = "{'wing': 'neutral'}";
+		return res;
 	}
 	
 	/*

@@ -1,15 +1,23 @@
 $(document).ready(function() {
-    let baseURL = "http://localhost:8080/WingIt/rest/rs";
+    let baseURL = "http://localhost:8080/WingIt/admin/";
+    let adminPrefix = "/admin/?adminRequest=";
 
     $(".command").each(function() {
-        var command = $(this);
+        var commandBlock = $(this);
+        var command = $(this).attr("id");
         $(this).on('click', function() {
-            $.get(baseURL + "/" + $(this).attr("id"), function(data) {
-                $(command).find(".check").fadeIn("slow", function() {
-                    $(command).find(".check").fadeOut("slow", function() {
-                    });
+            $.get(adminPrefix + command, function(data) {
+                $(commandBlock).find(".check").fadeIn("slow", function() {
+                    $(commandBlock).find(".check").fadeOut("slow");
                 });
             });
+
+            // $.get(baseURL + $(this).attr("id"), function(data) {
+            //     $(commandBlock).find(".check").fadeIn("slow", function() {
+            //         $(commandBlock).find(".check").fadeOut("slow", function() {
+            //         });
+            //     });
+            // });
         });
     });
 });
