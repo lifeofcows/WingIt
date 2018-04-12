@@ -25,7 +25,8 @@ import edu.uci.ics.crawler4j.url.WebURL;
 
 public class Crawler extends WebCrawler {
 
-	private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg" + "|png|mp3|mp4|zip|gz))$");
+	long beginTime, diffTime;
+	//private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg" + "|png|mp3|mp4|zip|gz))$");
 	ArrayList<String> saxParserMimeTypes;
 
 	/**
@@ -40,9 +41,23 @@ public class Crawler extends WebCrawler {
 	@Override
 	public boolean shouldVisit(Page referringPage, WebURL url) {
 		String href = url.getURL().toLowerCase();
-		return !FILTERS.matcher(href).matches() && ((href.startsWith("https://sikaman.dyndns.org/courses/4601/assignments")));
+		
+		boolean urlMatches = false;
+		for (String site : Recommender.newsSites) {
+			if (href.startsWith(site)) {
+				urlMatches = true; 
+				break;
+			}
+		}
+		//!FILTERS.matcher(href).matches() &&
+		return  urlMatches;
 	}
 
+	@Override
+	protected void handlePageStatusCode(WebURL webUrl, int statusCode, String statusDescription) {
+		beginTime = System.currentTimeMillis();
+	}
+	
 	/*
 	 * Description: visits a webpage, crawls the data, then stores it in the database
 	 * Input: the page to visit
@@ -85,7 +100,7 @@ public class Crawler extends WebCrawler {
 				System.out.println("Adding webpage");
 				//html = modifyHTMLLinks(html);
 				String genre = null;
-				WebPage webPage = new WebPage(docId, title, url, content, html); 
+				WebPage webPage = new WebPage(docId, title, url, content); 
 				Database.getInstance().insert(webPage);
 			}
 			
@@ -93,6 +108,10 @@ public class Crawler extends WebCrawler {
 			System.out.println("Text length: " + text.length());
 			System.out.println("Html length: " + html.length());
 			System.out.println("Number of outgoing links: " + outgoingUrls.size());
+			
 		}
+		
+		diffTime = System.currentTimeMillis() - beginTime;
+		this.getMyController().getConfig().setPolitenessDelay((int) (diffTime * 100));
 	}
 }

@@ -4,6 +4,8 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -19,6 +21,8 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 import javax.net.ssl.X509TrustManager;
 
 public class CrawlerController {
+	
+	public static ArrayList<String> newsSites ;
 	CrawlController controller;
 	int numberOfCrawlers = 7;
 	String crawlStorageFolder = "data/crawl/root";
@@ -28,25 +32,31 @@ public class CrawlerController {
 	/*
 	 * Description: this class prepares and controls the web crawler
 	 */
-	public CrawlerController(String dir) throws Exception {
+	public CrawlerController(String seed) throws Exception {
 //		disableCertificates();
 		CrawlConfig config = new CrawlConfig();
 		config.setCrawlStorageFolder(crawlStorageFolder);
 		config.setMaxDepthOfCrawling(maxDepthOfCrawling);
 		config.setIncludeBinaryContentInCrawling(true);
+		config.setMaxPagesToFetch(3);
 
 		PageFetcher pageFetcher = new PageFetcher(config);
 		RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
 		RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
 		controller = new CrawlController(config, pageFetcher, robotstxtServer);
 
-		controller.addSeed("https://sikaman.dyndns.org/courses/4601/assignments/" + dir + "/users/");
-		controller.addSeed("https://sikaman.dyndns.org/courses/4601/assignments/" + dir + "/pages/");
-
-		crawlBaseURL = "https://sikaman.dyndns.org/courses/4601/assignments/" + dir + "/";
+		controller.addSeed(seed);
+		//addSeeds();
+		
 		Database.getInstance();
 	}
 
+//	public void addSeeds() {
+//		for (String site : newsSites) {
+//			controller.addSeed(site);
+//		}
+//	}
+	
 	/*
 	 * Description: wipes the database and starts the web crawler
 	 * Input: none

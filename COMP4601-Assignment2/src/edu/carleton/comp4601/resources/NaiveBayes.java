@@ -18,7 +18,7 @@ import java.util.Map.Entry;
 
 public abstract class NaiveBayes {
 	
-	protected String trainingPath;
+	protected String stopWordPath;
 	protected ArrayList<String> classes;
 	protected ArrayList<Double> classPriors;
 	protected ArrayList<ArrayList<String>> classTexts;
@@ -35,8 +35,8 @@ public abstract class NaiveBayes {
 	protected NaiveBayes(ArrayList<String> classes) {
 		this.classes = classes;
 		
-//		trainingPath = "/Users/maximkuzmenko/Desktop/School/Third Year/First Semester/COMP 4601/COMP4601Assignment2/COMP4601-Assignment2/training/";
-		trainingPath = "/Users/AveryVine/Documents/School/Third Year/COMP4601/eclipse-workspace/COMP4601Assignment2/COMP4601-Assignment2/training/";
+		stopWordPath = "/Users/maximkuzmenko/Desktop/School/Third Year/First Semester/COMP 4601/WingIt/COMP4601-Assignment2/training/";
+		//trainingPath = "/Users/AveryVine/Documents/School/Third Year/COMP4601/eclipse-workspace/COMP4601Assignment2/COMP4601-Assignment2/training/";
 		
 		classPriors = new ArrayList<Double>();
 		classTexts = new ArrayList<ArrayList<String>>();
@@ -82,7 +82,7 @@ public abstract class NaiveBayes {
 	 */
 	private void readStopWords() {
 		System.out.println("Reading stop words...");
-		File file = new File(trainingPath + "stopwords.txt");
+		File file = new File(stopWordPath + "stopwords.txt");
 		Scanner scanner = null;
 		try {
 			scanner = new Scanner(file);
@@ -129,7 +129,7 @@ public abstract class NaiveBayes {
 		System.out.println("Reading class text...");
 		totalClassDocs = 0;
 		for (int i = 0; i < classes.size(); i++) {
-			File classDirectory = new File(trainingPath + "/" + classes.get(i));
+			File classDirectory = new File(stopWordPath + "/" + classes.get(i));
 			ArrayList<String> classText = new ArrayList<String>();
 			for (File file : classDirectory.listFiles()) {
 				if (file.getAbsolutePath().contains(".html") || file.getAbsolutePath().contains(".txt")) {

@@ -68,7 +68,7 @@ public class Database {
 		String url = doc.getString("url");
 		String content = doc.getString("content");
 		String html = doc.getString("html");
-		return new WebPage(docId, name, url, content, html);
+		return new WebPage(docId, name, url, content);
 	}
 
 	/*

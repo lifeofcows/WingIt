@@ -1,10 +1,10 @@
 package edu.carleton.comp4601.resources;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -23,7 +23,9 @@ public class Recommender {
 	String name, authorName1, authorName2;
 	CrawlerController controller;
 	WingAnalyzer genreAnalyzer;
-
+	static ArrayList<String> newsSites = new ArrayList<String>(Arrays.asList(
+			"https://www.vox.com/","https://www.economist.com/", "https://www.infowars.com/"));;
+	
 	/*
 	 * Description: constructor for the recommender class
 	 * Input: none
@@ -54,20 +56,21 @@ public class Recommender {
 	 * Return: 200 response code if successful, 500 otherwise
 	 */
 	@GET
-	@Path("reset/{dir}")
-	public Response reset(@PathParam("dir") String dir) {
-		System.out.println("reset -> " + dir);
+	@Path("reset/")
+	public Response reset() {
 		Response res = Response.ok().build();
-		try {
-			controller = new CrawlerController(dir);
-			controller.crawl();
-			genreAnalyzer = new WingAnalyzer();
-			genreAnalyzer.analyze();
-		} catch (Exception e) {
-			System.err.println("Error crawling data in dir: " + dir);
-			e.printStackTrace();
-			res = Response.serverError().build();
+		for (String site : newsSites) {
+			try {
+				controller = new CrawlerController(site);
+				controller.crawl();
+			} catch (Exception e) {
+				System.err.println("Error crawling data with site: " + site);
+				e.printStackTrace();
+				res = Response.serverError().build();
+			}
 		}
+		genreAnalyzer = new WingAnalyzer();
+		genreAnalyzer.analyze();
 		return res;
 	}
 	

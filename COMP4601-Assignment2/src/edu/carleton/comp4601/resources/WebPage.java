@@ -11,12 +11,11 @@ public class WebPage {
 	/*
 	 * Description: a webpage is a representation of a page containing reviews for a particular movie
 	 */
-	public WebPage(int docId, String name, String url, String content, String html) {
+	public WebPage(int docId, String name, String url, String content) {
 		this.docId = docId;
 		this.name = name;
 		this.url = url;
 		this.content = content;
-		this.html = html;
 	}
 	
 	/*
