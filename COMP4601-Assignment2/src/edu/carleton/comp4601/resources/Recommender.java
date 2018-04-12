@@ -12,7 +12,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-@Path("/rs")
+@Path("/")
 public class Recommender {
 
 	@Context
@@ -33,7 +33,7 @@ public class Recommender {
 	public Recommender() {
 		authorName1 = "Avery Vine";
 		authorName2 = "Maxim Kuzmenko";
-		name = "COMP4601 Assignment 2 Recommender System: " + authorName1 + " and " + authorName2;
+		name = "WingIt";
 	}
 
 	/*
