@@ -20,6 +20,11 @@ app.get(['/', '/index.html', '/index'], function(req, res) {
 	res.sendFile('index.html', { root: ROOT });
 });
 
+//render the admin page
+app.get(['/admin.html', '/admin'], function(req, res) {
+	res.sendFile('admin.html', { root: ROOT });
+});
+
 //send all other static files
 app.use(express.static(ROOT));
 
