@@ -49,6 +49,14 @@ public class Database {
 		analyzerCollection.insertOne(doc);
 	}
 	
+	public ArrayList<Double> getClassPriors() {
+		return null;
+	}
+	
+	public ArrayList<HashMap<String, Double>> getClassConditionalProbabilities() {
+		return null;
+	}
+	
 	/*
 	 * Description: serializes a webpage so it can be added to the database
 	 * Input: the webpage to serialize
