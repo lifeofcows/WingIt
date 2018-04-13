@@ -1,10 +1,7 @@
 package edu.carleton.comp4601.resources;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,14 +26,18 @@ public abstract class NaiveBayes {
 	protected HashSet<String> stopWords;
 	protected int totalClassDocs, totalVocabulary;
 	
+	protected NaiveBayes() {
+		//TODO: pull from database
+	}
+	
 	/*
 	 * Description: this class provides an interface for use of the Naive Bayes algorithm, for various purposes
 	 */
 	protected NaiveBayes(ArrayList<String> classes) {
 		this.classes = classes;
 		
-		stopWordPath = "/Users/maximkuzmenko/Desktop/School/Third Year/First Semester/COMP 4601/WingIt/COMP4601-Assignment2/training/";
-		//trainingPath = "/Users/AveryVine/Documents/School/Third Year/COMP4601/eclipse-workspace/COMP4601Assignment2/COMP4601-Assignment2/training/";
+//		stopWordPath = "/Users/maximkuzmenko/Desktop/School/Third Year/First Semester/COMP 4601/WingIt/COMP4601-Assignment2/training/";
+		stopWordPath = "/Users/AveryVine/Documents/School/Third Year/COMP4601/eclipse-workspace/COMP4601Assignment2/COMP4601-Assignment2/training/";
 		
 		classPriors = new ArrayList<Double>();
 		classTexts = new ArrayList<ArrayList<String>>();
@@ -49,7 +50,7 @@ public abstract class NaiveBayes {
 		readStopWords();
 	}
 	
-	public void train(ArrayList<ArrayList<String>> classTexts) {
+	public void analyzeTrainingData(ArrayList<ArrayList<String>> classTexts) {
 		this.classTexts = classTexts;
 		countClassDocs();
 		calculateClassPriors();
@@ -65,7 +66,7 @@ public abstract class NaiveBayes {
 	 * Input: none
 	 * Return: none
 	 */
-	public abstract void analyze();
+	public abstract void train();
 	
 	/*
 	 * Description: processes a piece of text and returns a score based off the Naive Bayes algorithm
@@ -83,9 +84,7 @@ public abstract class NaiveBayes {
 	private void countClassDocs() {
 		totalClassDocs = 0;
 		for (ArrayList<String> arr : classTexts) {
-			for (String str : arr) {
-				totalClassDocs++;
-			}
+			totalClassDocs += arr.size();
 		}
 	}
 	
@@ -119,27 +118,6 @@ public abstract class NaiveBayes {
 				scanner.close();
 			}
 		} 
-	}
-	
-	/*
-	 * Description: reads text in from a file for the purpose of training
-	 * Input: the file to read
-	 * Return: the content of the file
-	 */
-	@SuppressWarnings("resource")
-	private String readClassFile(File file) {
-		String content = "";
-		
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(file));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				content += line;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return content;
 	}
 
 	

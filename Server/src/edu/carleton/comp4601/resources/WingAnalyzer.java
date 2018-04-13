@@ -1,6 +1,5 @@
 package edu.carleton.comp4601.resources;
 
-import java.math.BigDecimal;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,11 +10,15 @@ public class WingAnalyzer extends NaiveBayes {
 	private static final int NUM_THREADS = 3;
 	
 	private ArrayDeque<WebPage> webpages;
+	
+	public WingAnalyzer() {
+		super();
+	}
 
 	/*
 	 * Description: this class implements the Naive Bayes algorithm with the purpose of calculating movie genres
 	 */
-	public WingAnalyzer() {
+	public WingAnalyzer(ArrayList<String> WINGS) {
 		super(WINGS);
 	}
 	
@@ -25,7 +28,7 @@ public class WingAnalyzer extends NaiveBayes {
 	 * Return: none
 	 */
 	@Override
-	public void analyze() {
+	public void train() {
 		webpages = new ArrayDeque<WebPage>(Database.getInstance().getWebPages());
 		
 		ArrayList<ArrayList<String>> classTexts = new ArrayList<ArrayList<String>>();
@@ -40,12 +43,36 @@ public class WingAnalyzer extends NaiveBayes {
 					while ((webpage = getNext()) != null) {
 						classTexts.get(WINGS.indexOf(webpage.getWing())).add(webpage.getContent());
 					}
-					train(classTexts);
+					analyzeTrainingData(classTexts);
 					Database.getInstance().insert(classConditionalProbabilities, classPriors);
 				}
 		
 			}).start();
 		}
+	}
+	
+	public String analyze(String url) {
+		//TODO: get text from url
+		String urlText = "this is a test";
+		
+		//TODO: store scores retrieved from processText
+		processText(urlText);
+		
+		//TODO: calculate wing based off score
+		String wing = "neutral";
+		
+		String res = "{";
+		res += json("url", url);
+		res += json("wing", wing);
+		if (res.length() > 1) {
+			res = res.substring(0, res.length() - 2);
+		}
+		res += "}";
+		return res;
+	}
+	
+	private String json(String key, String value) {
+		return "\"" + key + "\": \"" + value + "\", ";
 	}
 	
 	private synchronized WebPage getNext() {
