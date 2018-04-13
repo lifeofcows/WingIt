@@ -2,6 +2,7 @@ package edu.carleton.comp4601.resources;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -22,9 +23,15 @@ public class Recommender {
 
 	String name, authorName1, authorName2;
 	CrawlerController controller;
-	WingAnalyzer genreAnalyzer;
-	static ArrayList<String> newsSites = new ArrayList<String>(Arrays.asList(
-			"https://www.vox.com/","https://www.economist.com/", "https://www.infowars.com/"));;
+	WingAnalyzer wingAnalyzer;
+	public static HashMap<String, String> newsSites;
+	static {
+		newsSites = new HashMap<String, String>();
+		newsSites.put("https://www.vox.com/", WingAnalyzer.WINGS.get(0));
+		newsSites.put("https://www.economist.com/", WingAnalyzer.WINGS.get(1));
+		newsSites.put("https://www.infowars.com/", WingAnalyzer.WINGS.get(2));
+	}
+	public static String currentWing;
 	
 	/*
 	 * Description: constructor for the recommender class
@@ -59,7 +66,7 @@ public class Recommender {
 	@Path("reset/")
 	public Response reset() {
 		Response res = Response.ok().build();
-		for (String site : newsSites) {
+		for (String site : newsSites.keySet()) {
 			try {
 				controller = new CrawlerController(site);
 				controller.crawl();
@@ -69,8 +76,8 @@ public class Recommender {
 				res = Response.serverError().build();
 			}
 		}
-		genreAnalyzer = new WingAnalyzer();
-		genreAnalyzer.analyze();
+		wingAnalyzer = new WingAnalyzer();
+		wingAnalyzer.analyze();
 		return res;
 	}
 	

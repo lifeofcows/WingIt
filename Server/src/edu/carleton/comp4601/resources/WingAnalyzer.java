@@ -28,28 +28,22 @@ public class WingAnalyzer extends NaiveBayes {
 	public void analyze() {
 		webpages = new ArrayDeque<WebPage>(Database.getInstance().getWebPages());
 		
+		ArrayList<ArrayList<String>> classTexts = new ArrayList<ArrayList<String>>();
+		for (int i = 0; i < WINGS.size(); i++) {
+			classTexts.add(new ArrayList<String>());
+		}
 		for (int i = 0; i < NUM_THREADS; i++) {
 			new Thread(new Runnable() {
-
 				@Override
 				public void run() {
 					WebPage webpage;
 					while ((webpage = getNext()) != null) {
-						ArrayList<String> output = new ArrayList<String>();
-						ArrayList<BigDecimal> scores = processText(webpage.getContent());
-						int indexOfBestScore = -1;
-						for (int i = 0; i < scores.size(); i++) {
-							if (indexOfBestScore == -1 || scores.get(i).compareTo(scores.get(indexOfBestScore)) == 1) {
-								indexOfBestScore = i;
-							}
-							output.add(getClasses().get(i) + " score for page " + webpage.getName() + " is " + scores.get(i).toEngineeringString());
-						}
-						webpage.setGenre(getClasses().get(indexOfBestScore));
-						System.out.println("Set genre of " + webpage.getName() + ": " + webpage.getGenre());
-						Database.getInstance().insert(webpage);
+						classTexts.get(WINGS.indexOf(webpage.getWing())).add(webpage.getContent());
 					}
+					train(classTexts);
+					Database.getInstance().insert(classConditionalProbabilities, classPriors);
 				}
-				
+		
 			}).start();
 		}
 	}

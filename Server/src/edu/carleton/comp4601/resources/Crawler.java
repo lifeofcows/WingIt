@@ -26,7 +26,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 public class Crawler extends WebCrawler {
 
 	long beginTime, diffTime;
-	//private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg" + "|png|mp3|mp4|zip|gz))$");
+	private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg" + "|png|mp3|mp4|zip|gz))$");
 	ArrayList<String> saxParserMimeTypes;
 
 	/**
@@ -43,14 +43,13 @@ public class Crawler extends WebCrawler {
 		String href = url.getURL().toLowerCase();
 		
 		boolean urlMatches = false;
-		for (String site : Recommender.newsSites) {
+		for (String site : Recommender.newsSites.keySet()) {
 			if (href.startsWith(site)) {
 				urlMatches = true; 
 				break;
 			}
 		}
-		//!FILTERS.matcher(href).matches() &&
-		return  urlMatches;
+		return !FILTERS.matcher(href).matches() && urlMatches;
 	}
 
 	@Override
@@ -89,25 +88,19 @@ public class Crawler extends WebCrawler {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
 			String text = htmlParseData.getText();
 			String html = htmlParseData.getHtml();
-			Set<WebURL> outgoingUrls = htmlParseData.getOutgoingUrls();
 			ArrayList<String> links = new ArrayList<String>();
-			for (WebURL webUrl : outgoingUrls) {
-				//links.add(webUrl.getAnchor());
-			}
 
 			int docId = page.getWebURL().getDocid();
 			if (title != "") {
 				System.out.println("Adding webpage");
-				//html = modifyHTMLLinks(html);
-				String genre = null;
-				WebPage webPage = new WebPage(docId, title, url, content); 
+				WebPage webPage = new WebPage(docId, title, url, content, Recommender.currentWing); 
 				Database.getInstance().insert(webPage);
 			}
 			
 			// Output for debugging purposes
 			System.out.println("Text length: " + text.length());
 			System.out.println("Html length: " + html.length());
-			System.out.println("Number of outgoing links: " + outgoingUrls.size());
+			//System.out.println("Number of outgoing links: " + outgoingUrls.size());
 			
 		}
 		

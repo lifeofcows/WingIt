@@ -47,13 +47,18 @@ public abstract class NaiveBayes {
 		stopWords = new HashSet<String>();
 		
 		readStopWords();
-		readClassText();
+	}
+	
+	public void train(ArrayList<ArrayList<String>> classTexts) {
+		this.classTexts = classTexts;
+		countClassDocs();
 		calculateClassPriors();
 		cleanClassTexts();
 		determineTopWords();
 		countClassValues();
 		calculateConditionalWordProbabilities();
 	}
+	
 	
 	/*
 	 * Description: a function that should be implemented by derived classes, to work with the data provided by the Naive Bayes algorithm
@@ -73,6 +78,23 @@ public abstract class NaiveBayes {
 		
 		ArrayList<BigDecimal> scores = calculateClassScores(words);
 		return scores;
+	}
+	
+	private void countClassDocs() {
+		totalClassDocs = 0;
+		for (ArrayList<String> arr : classTexts) {
+			for (String str : arr) {
+				totalClassDocs++;
+			}
+		}
+	}
+	
+	public void setClassConditionalProbabilities(ArrayList<HashMap<String, Double>> classConditionalProbabilities) {
+		this.classConditionalProbabilities = classConditionalProbabilities;
+	}
+	
+	public void setClassPriors(ArrayList<Double> classPriors) {
+		this.classPriors = classPriors;
 	}
 	
 	/*
@@ -119,27 +141,7 @@ public abstract class NaiveBayes {
 		}
 		return content;
 	}
-	
-	/*
-	 * Description: reads the text of all of the files to be used for training
-	 * Input: none
-	 * Return: none
-	 */
-	private void readClassText() {
-		System.out.println("Reading class text...");
-		totalClassDocs = 0;
-		for (int i = 0; i < classes.size(); i++) {
-			File classDirectory = new File(stopWordPath + "/" + classes.get(i));
-			ArrayList<String> classText = new ArrayList<String>();
-			for (File file : classDirectory.listFiles()) {
-				if (file.getAbsolutePath().contains(".html") || file.getAbsolutePath().contains(".txt")) {
-					classText.add(readClassFile(file));
-					totalClassDocs++;
-				}
-			}
-			classTexts.add(classText);
-		}
-	}
+
 	
 	/*
 	 * Description: calculates the prior for each class

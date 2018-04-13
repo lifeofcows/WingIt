@@ -5,17 +5,18 @@ import java.util.HashSet;
 public class WebPage {
 
 	private int docId;
-	private String name, url, genre, content, html;
+	private String name, url, genre, content, html, wing;
 	private HashSet<String> users;
 	
 	/*
 	 * Description: a webpage is a representation of a page containing reviews for a particular movie
 	 */
-	public WebPage(int docId, String name, String url, String content) {
+	public WebPage(int docId, String name, String url, String content, String wing) {
 		this.docId = docId;
 		this.name = name;
 		this.url = url;
 		this.content = content;
+		this.wing = wing;
 	}
 	
 	/*
@@ -25,6 +26,10 @@ public class WebPage {
 	 */
 	public int getDocId() { 
 		return docId;
+	}
+	
+	public String getWing() {
+		return wing;
 	}
 	
 	/*

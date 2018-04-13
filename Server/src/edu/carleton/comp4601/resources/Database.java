@@ -16,7 +16,7 @@ import org.bson.Document;
 public class Database {
 
 	static Database instance;
-	MongoCollection<Document> userCollection, webpageCollection;
+	MongoCollection<Document> analyzerCollection, webpageCollection;
 	MongoClient mongoClient;
 	MongoDatabase database;
 	
@@ -28,15 +28,25 @@ public class Database {
 		database = mongoClient.getDatabase("wingit");
 		
 		webpageCollection = database.getCollection("webpageData");
+		analyzerCollection = database.getCollection("analyzerData");
 	}
 	
 	/*
-	 * Description: inserts a webpage into the databse, replacing whatever may exist already
+	 * Description: inserts a webpage into the database, replacing whatever may exist already
 	 * Input: the webpage to insert
 	 * Return: none
 	 */
 	public synchronized void insert(WebPage webpage) {
 		webpageCollection.replaceOne(new Document("docId", webpage.getDocId()), serialize(webpage), new UpdateOptions().upsert(true));
+	}
+	
+	public void insert(ArrayList<HashMap<String, Double>> classConditionalProbabilities, ArrayList<Double> classPriors) {
+		analyzerCollection.drop();
+		analyzerCollection = database.getCollection("analyzerData");
+		Document doc = new Document();
+		doc.put("classConditionalProbabilities", classConditionalProbabilities);
+		doc.put("classPriors", classPriors);
+		analyzerCollection.insertOne(doc);
 	}
 	
 	/*
@@ -49,10 +59,8 @@ public class Database {
 		doc.put("docId", webpage.getDocId());
 		doc.put("name", webpage.getName());
 		doc.put("url", webpage.getUrl());
-		doc.put("users", webpage.getUsers());
-		doc.put("genre", webpage.getGenre());
 		doc.put("content", webpage.getContent());
-		doc.put("html", webpage.getHTML());
+		doc.put("wing", webpage.getWing());
 		return doc;
 	}
 	
@@ -68,7 +76,8 @@ public class Database {
 		String url = doc.getString("url");
 		String content = doc.getString("content");
 		String html = doc.getString("html");
-		return new WebPage(docId, name, url, content);
+		String wing = doc.getString("wing");
+		return new WebPage(docId, name, url, content, wing);
 	}
 
 	/*
@@ -78,6 +87,7 @@ public class Database {
 	 */
 	public void clear() {
 		webpageCollection.drop();
+		
 	}
 	
 

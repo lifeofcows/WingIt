@@ -46,16 +46,9 @@ public class CrawlerController {
 		controller = new CrawlController(config, pageFetcher, robotstxtServer);
 
 		controller.addSeed(seed);
-		//addSeeds();
 		
 		Database.getInstance();
 	}
-
-//	public void addSeeds() {
-//		for (String site : newsSites) {
-//			controller.addSeed(site);
-//		}
-//	}
 	
 	/*
 	 * Description: wipes the database and starts the web crawler
