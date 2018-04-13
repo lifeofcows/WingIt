@@ -1,12 +1,9 @@
 package edu.carleton.comp4601.resources;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -36,22 +33,12 @@ public class Recommender {
 	public static String currentWing;
 	public static int docId = 0;
 	
-	/*
-	 * Description: constructor for the recommender class
-	 * Input: none
-	 * Return: none
-	 */
 	public Recommender() {
 		authorName1 = "Avery Vine";
 		authorName2 = "Maxim Kuzmenko";
 		name = "WingIt";
 	}
 
-	/*
-	 * Description: gets the name of the recommender system
-	 * Input: none
-	 * Return: html representation of the name
-	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getName() {
@@ -60,11 +47,6 @@ public class Recommender {
 		return res;
 	}
 
-	/*
-	 * Description: reset the recommender system by wiping the database, crawling the pages, and analyzing page genres
-	 * Input: the directory of the pages to crawl
-	 * Return: 200 response code if successful, 500 otherwise
-	 */
 	@GET
 	@Path("admin")
 	public Response admin(@QueryParam("adminRequest") String adminRequest) {
@@ -84,8 +66,8 @@ public class Recommender {
 						res = Response.serverError().build();
 					}
 				}
-				wingAnalyzer = new WingAnalyzer();
-				wingAnalyzer.analyze();
+				wingAnalyzer = new WingAnalyzer(WingAnalyzer.WINGS);
+				wingAnalyzer.train();
 				break;
 			default:
 				res = Response.noContent().build();
@@ -94,7 +76,7 @@ public class Recommender {
 	}
 	
 	@GET
-	@Path("url")
+	@Path("analysis")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String url() {
 		String res = "clasConditionalProbabalities is " + Database.getInstance().getClassConditionalProbabilities().toString()
@@ -107,12 +89,14 @@ public class Recommender {
 	 * Input: none
 	 * Return: html representation of the users and the fields used for community calculation
 	 */
+
 	@GET
 	@Path("url")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String url(@QueryParam("url") String url) {
 		System.out.println("url -> " + url);
-		String res = "{'wing': 'neutral'}";
+		wingAnalyzer = new WingAnalyzer();
+		String res = wingAnalyzer.analyze(url);
 		return res;
 	}
 	
@@ -148,5 +132,4 @@ public class Recommender {
 	public static synchronized int getAndIncrementDocId() {
 		return ++docId;
 	}
-	
 }
