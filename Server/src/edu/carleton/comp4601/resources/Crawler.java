@@ -88,12 +88,10 @@ public class Crawler extends WebCrawler {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
 			String text = htmlParseData.getText();
 			String html = htmlParseData.getHtml();
-			ArrayList<String> links = new ArrayList<String>();
-
-			int docId = page.getWebURL().getDocid();
+			
 			if (title != "") {
-				System.out.println("Adding webpage");
-				WebPage webPage = new WebPage(docId, title, url, content, Recommender.currentWing); 
+				WebPage webPage = new WebPage(Recommender.getAndIncrementDocId(), title, url, content, Recommender.currentWing); 
+				System.out.println("Added webpage with docId: " + webPage.getDocId());
 				Database.getInstance().insert(webPage);
 			}
 			

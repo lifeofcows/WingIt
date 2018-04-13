@@ -50,10 +50,20 @@ public class Database {
 	}
 	
 	public ArrayList<Double> getClassPriors() {
+		FindIterable<Document> result = webpageCollection.find();
+		Document doc = result.first();
+		if (doc != null) {
+			return (ArrayList<Double>) doc.get("classPriors");
+		}
 		return null;
 	}
 	
 	public ArrayList<HashMap<String, Double>> getClassConditionalProbabilities() {
+		FindIterable<Document> result = webpageCollection.find();
+		Document doc = result.first();
+		if (doc != null) {
+			return (ArrayList<HashMap<String, Double>>) doc.get("classConditionalProbabilities");
+		}
 		return null;
 	}
 	
@@ -95,7 +105,7 @@ public class Database {
 	 */
 	public void clear() {
 		webpageCollection.drop();
-		
+		analyzerCollection.drop();
 	}
 	
 

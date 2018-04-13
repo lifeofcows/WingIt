@@ -33,12 +33,13 @@ public class CrawlerController {
 	 * Description: this class prepares and controls the web crawler
 	 */
 	public CrawlerController(String seed) throws Exception {
+		System.setProperty("http.agent", "Chrome");
 //		disableCertificates();
 		CrawlConfig config = new CrawlConfig();
 		config.setCrawlStorageFolder(crawlStorageFolder);
 		config.setMaxDepthOfCrawling(maxDepthOfCrawling);
 		config.setIncludeBinaryContentInCrawling(true);
-		config.setMaxPagesToFetch(3);
+		config.setMaxPagesToFetch(2);
 
 		PageFetcher pageFetcher = new PageFetcher(config);
 		RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
@@ -56,7 +57,6 @@ public class CrawlerController {
 	 * Return: none
 	 */
 	public void crawl() {
-		Database.getInstance().clear();
 		controller.start(Crawler.class, numberOfCrawlers);
 	}
 	

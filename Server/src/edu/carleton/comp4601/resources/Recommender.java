@@ -34,6 +34,7 @@ public class Recommender {
 		newsSites.put("https://www.infowars.com/", WingAnalyzer.WINGS.get(2));
 	}
 	public static String currentWing;
+	public static int docId = 0;
 	
 	/*
 	 * Description: constructor for the recommender class
@@ -71,10 +72,12 @@ public class Recommender {
 		Response res = Response.ok().build();
 		switch (adminRequest) {
 			case "reset":
+				Database.getInstance().clear();
 				for (String site : newsSites.keySet()) {
+					currentWing = newsSites.get(site);
 					try {
 						controller = new CrawlerController(site);
-//						controller.crawl();
+						controller.crawl();
 					} catch (Exception e) {
 						System.err.println("Error crawling data with site: " + site);
 						e.printStackTrace();
@@ -87,6 +90,15 @@ public class Recommender {
 			default:
 				res = Response.noContent().build();
 		}
+		return res;
+	}
+	
+	@GET
+	@Path("url")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String url() {
+		String res = "clasConditionalProbabalities is " + Database.getInstance().getClassConditionalProbabilities().toString()
+					+ " classPriors are " + Database.getInstance().getClassPriors().toString();
 		return res;
 	}
 	
@@ -132,4 +144,9 @@ public class Recommender {
 	public String wrapHTML(String title, String body) {
 		return "<html> <head> <title> " + title + " </title> </head> <body> " + body + " </body> </html>";
 	}
+	
+	public static synchronized int getAndIncrementDocId() {
+		return ++docId;
+	}
+	
 }

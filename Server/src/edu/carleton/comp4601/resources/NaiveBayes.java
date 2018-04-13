@@ -35,7 +35,7 @@ public abstract class NaiveBayes {
 	protected NaiveBayes(ArrayList<String> classes) {
 		this.classes = classes;
 		
-		stopWordPath = "/Users/maximkuzmenko/Desktop/School/Third Year/First Semester/COMP 4601/WingIt/COMP4601-Assignment2/training/";
+		stopWordPath = "/Users/maximkuzmenko/Desktop/School/Third Year/First Semester/COMP 4601/WingIt/Server/training/";
 		//trainingPath = "/Users/AveryVine/Documents/School/Third Year/COMP4601/eclipse-workspace/COMP4601Assignment2/COMP4601-Assignment2/training/";
 		
 		classPriors = new ArrayList<Double>();
@@ -58,7 +58,6 @@ public abstract class NaiveBayes {
 		countClassValues();
 		calculateConditionalWordProbabilities();
 	}
-	
 	
 	/*
 	 * Description: a function that should be implemented by derived classes, to work with the data provided by the Naive Bayes algorithm

@@ -32,20 +32,22 @@ public class WingAnalyzer extends NaiveBayes {
 		for (int i = 0; i < WINGS.size(); i++) {
 			classTexts.add(new ArrayList<String>());
 		}
-		for (int i = 0; i < NUM_THREADS; i++) {
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					WebPage webpage;
-					while ((webpage = getNext()) != null) {
-						classTexts.get(WINGS.indexOf(webpage.getWing())).add(webpage.getContent());
-					}
-					train(classTexts);
-					Database.getInstance().insert(classConditionalProbabilities, classPriors);
-				}
 		
-			}).start();
+		WebPage webpage;
+		while ((webpage = getNext()) != null) {
+			classTexts.get(WINGS.indexOf(webpage.getWing())).add(webpage.getContent());
 		}
+		train(classTexts);
+		Database.getInstance().insert(classConditionalProbabilities, classPriors);
+		
+//		for (int i = 0; i < NUM_THREADS; i++) {
+//			new Thread(new Runnable() {
+//				@Override
+//				public void run() {
+//			
+//				}
+//			}).start();
+//		}
 	}
 	
 	private synchronized WebPage getNext() {
