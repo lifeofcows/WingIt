@@ -2,6 +2,7 @@ package edu.carleton.comp4601.resources;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -12,7 +13,10 @@ import org.jsoup.nodes.Document;
 
 public class WingAnalyzer extends NaiveBayes {
 	
-	public static final ArrayList<String> WINGS = new ArrayList<String>(Arrays.asList("left", "neutral", "right"));
+	public static final String left = "left";
+	public static final String neutral = "neutral";
+	public static final String right = "right";
+	public static final ArrayList<String> WINGS = new ArrayList<String>(Arrays.asList(left, neutral, right));
 	
 	private ArrayDeque<WebPage> webpages;
 	
@@ -36,6 +40,8 @@ public class WingAnalyzer extends NaiveBayes {
 	public void train() {
 		webpages = new ArrayDeque<WebPage>(Database.getInstance().getWebPages());
 		
+		System.out.println("webpages size in train is " + webpages.size());
+		
 		ArrayList<ArrayList<String>> classTexts = new ArrayList<ArrayList<String>>();
 		for (int i = 0; i < WINGS.size(); i++) {
 			classTexts.add(new ArrayList<String>());
@@ -54,7 +60,6 @@ public class WingAnalyzer extends NaiveBayes {
 		ArrayList<String> keys = new ArrayList<String>();
 		ArrayList<String> values = new ArrayList<String>();
 		try {
-			
 			setClassConditionalProbabilities(Database.getInstance().getClassConditionalProbabilities());
 			setClassPriors(Database.getInstance().getClassPriors());
 			
@@ -64,7 +69,11 @@ public class WingAnalyzer extends NaiveBayes {
 			System.out.println("Retrieved website html:");
 			System.out.println(urlText);
 			
-			processText(urlText, WINGS);
+			ArrayList<BigDecimal> wingSentiments = processText(urlText, WINGS);
+			
+			for (int i = 0; i < wingSentiments.size(); i++) {
+				System.out.println("Wing sentiment for " + WINGS.get(i) + " is " + wingSentiments.get(i).doubleValue());
+			}
 			
 			//TODO: calculate wing based off score
 			String wing = "neutral";

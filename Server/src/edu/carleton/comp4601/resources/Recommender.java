@@ -30,9 +30,9 @@ public class Recommender {
 	private Thread[] threads;
 	static {
 		newsSites = new HashMap<String, String>();
-		newsSites.put("https://www.vox.com/", WingAnalyzer.WINGS.get(0));
-		newsSites.put("https://www.economist.com/", WingAnalyzer.WINGS.get(1));
-		newsSites.put("https://www.infowars.com/", WingAnalyzer.WINGS.get(2));
+		newsSites.put("https://www.vox.com/", WingAnalyzer.left);
+		newsSites.put("https://www.economist.com/", WingAnalyzer.neutral);
+		newsSites.put("https://www.infowars.com/", WingAnalyzer.right);
 	}
 	private static final int NUM_THREADS = 3;
 	

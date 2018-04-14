@@ -3,13 +3,13 @@ package edu.carleton.comp4601.resources;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.UpdateOptions;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map.Entry;
 
 import org.bson.Document;
 
@@ -44,9 +44,19 @@ public class Database {
 		analyzerCollection.drop();
 		analyzerCollection = database.getCollection("analyzerData");
 		Document doc = new Document();
-		doc.put("classConditionalProbabilities", classConditionalProbabilities);
 		doc.put("classPriors", classPriors);
 		analyzerCollection.insertOne(doc);
+		
+		for (int i = 0; i < WingAnalyzer.WINGS.size();  i++) {
+			Document classDoc = new Document();
+			HashMap<String, Double> map = classConditionalProbabilities.get(i);
+			if (map == null) {
+				map = new HashMap<String, Double>();
+			}
+			System.out.println("for wing analyzer index " + i + ", keyset is " + map.keySet() + ", values are " + map.values());
+			classDoc.putAll(map);
+			analyzerCollection.insertOne(classDoc);
+		}
 	}
 	
 	public ArrayList<Double> getClassPriors() {
@@ -60,14 +70,23 @@ public class Database {
 	
 	public ArrayList<HashMap<String, Double>> getClassConditionalProbabilities() {
 		FindIterable<Document> result = analyzerCollection.find();
-		Document doc = result.first();
-		if (doc != null) {
-			ArrayList<HashMap<String, Double>> tempClassConditionalProbabilities = (ArrayList<HashMap<String, Double>>) doc.get("classConditionalProbabilities");
-			System.out.println("TYPE");
-			System.out.println(tempClassConditionalProbabilities.get(0).getClass().getName());
-			return (ArrayList<HashMap<String, Double>>) doc.get("classConditionalProbabilities");
+		ArrayList<HashMap<String, Double>> classConditionalProbabilities = new ArrayList<HashMap<String, Double>>();
+		int count = 0;
+		for (Document doc : result) {
+			count++;
+			if (count == 1) {
+				continue;
+			}
+			HashMap<String, Double> map = new HashMap<String, Double>();
+			for (Entry<String, Object> entry : doc.entrySet()) {
+				if (!entry.getKey().equals("_id")) {
+					map.put(entry.getKey(), (Double) entry.getValue());
+				}
+			}
+			classConditionalProbabilities.add(map);
 		}
-		return null;
+		System.out.println("count is " + count);
+		return classConditionalProbabilities;
 	}
 	
 	/*
