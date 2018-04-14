@@ -55,6 +55,9 @@ public class WingAnalyzer extends NaiveBayes {
 		ArrayList<String> values = new ArrayList<String>();
 		try {
 			
+			setClassConditionalProbabilities(Database.getInstance().getClassConditionalProbabilities());
+			setClassPriors(Database.getInstance().getClassPriors());
+			
 			Document doc = Jsoup.connect(url).get();
 			String urlText = Jsoup.parse(doc.html()).text();
 			

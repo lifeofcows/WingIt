@@ -146,7 +146,7 @@ public class Recommender {
 		String json = "{";
 		if (keys.size() == values.size()) {
 			for (int i = 0; i < keys.size(); i++) {
-				json += JSONify(keys.get(0), values.get(0));
+				json += JSONify(keys.get(i), values.get(i));
 				if (i < keys.size() - 1) {
 					json += ", ";
 				}

@@ -10,7 +10,9 @@ $(document).ready(function() {
             $.get(adminPrefix + command, function(data) {
                 console.log("Received data: " + data);
                 $(commandBlock).find(".check").fadeIn("slow", function() {
-                    $(commandBlock).find(".check").fadeOut("slow");
+                    setTimeout(function() {
+                        $(commandBlock).find(".check").fadeOut("slow");
+                    }, 5000);
                 });
             });
         });
