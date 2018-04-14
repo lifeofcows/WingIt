@@ -7,7 +7,6 @@ import java.util.Arrays;
 public class WingAnalyzer extends NaiveBayes {
 	
 	public static final ArrayList<String> WINGS = new ArrayList<String>(Arrays.asList("left", "neutral", "right"));
-	private static final int NUM_THREADS = 3;
 	
 	private ArrayDeque<WebPage> webpages;
 	
@@ -46,27 +45,32 @@ public class WingAnalyzer extends NaiveBayes {
 	}
 	
 	public String analyze(String url) {
+		ArrayList<String> keys = new ArrayList<String>();
+		ArrayList<String> values = new ArrayList<String>();
+		
 		//TODO: get text from url
 		String urlText = "this is a test";
 		
 		//TODO: store scores retrieved from processText
-		processText(urlText);
-		
-		//TODO: calculate wing based off score
-		String wing = "neutral";
-		
-		String res = "{";
-		res += json("url", url);
-		res += json("wing", wing);
-		if (res.length() > 1) {
-			res = res.substring(0, res.length() - 2);
+		try {
+			
+			processText(urlText);
+			
+			//TODO: calculate wing based off score
+			String wing = "neutral";
+			
+			keys.add("statusCode");
+			values.add("200");
+			keys.add("wing");
+			values.add(wing);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			keys.add("statusCode");
+			values.add("500");
 		}
-		res += "}";
-		return res;
-	}
-	
-	private String json(String key, String value) {
-		return "\"" + key + "\": \"" + value + "\", ";
+		
+		return Recommender.JSONify(keys, values);
 	}
 	
 	private synchronized WebPage getNext() {

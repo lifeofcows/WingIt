@@ -6,6 +6,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -22,7 +23,6 @@ import javax.net.ssl.X509TrustManager;
 
 public class CrawlerController {
 	
-	public static ArrayList<String> newsSites ;
 	CrawlController controller;
 	int numberOfCrawlers = 7;
 	String crawlStorageFolder = "data/crawl/root";
@@ -73,12 +73,10 @@ public class CrawlerController {
 					}
 					@Override
 					public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-						// TODO Auto-generated method stub
 
 					}
 					@Override
 					public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-						// TODO Auto-generated method stub
 
 					}
 				}
@@ -89,13 +87,11 @@ public class CrawlerController {
 		try {
 			sc = SSLContext.getInstance("SSL");
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			sc.init(null, trustAllCerts, new java.security.SecureRandom());
 		} catch (KeyManagementException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());

@@ -40,7 +40,7 @@ public class Database {
 		webpageCollection.replaceOne(new Document("docId", webpage.getDocId()), serialize(webpage), new UpdateOptions().upsert(true));
 	}
 	
-	public void insert(ArrayList<HashMap<String, Double>> classConditionalProbabilities, ArrayList<Double> classPriors) {
+	public synchronized void insert(ArrayList<HashMap<String, Double>> classConditionalProbabilities, ArrayList<Double> classPriors) {
 		analyzerCollection.drop();
 		analyzerCollection = database.getCollection("analyzerData");
 		Document doc = new Document();
@@ -104,6 +104,7 @@ public class Database {
 	 * Return: none
 	 */
 	public void clear() {
+		Crawler.resetDocId();
 		webpageCollection.drop();
 		analyzerCollection.drop();
 	}
@@ -144,7 +145,7 @@ public class Database {
 	 * Input: none
 	 * Return: the instance of the database
 	 */
-	public static Database getInstance() {
+	public static synchronized Database getInstance() {
 		if (instance == null) {
 			instance = new Database();
 		}

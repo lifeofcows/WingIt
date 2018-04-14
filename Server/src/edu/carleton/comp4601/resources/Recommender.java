@@ -1,5 +1,7 @@
 package edu.carleton.comp4601.resources;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.ws.rs.GET;
@@ -9,7 +11,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 @Path("/")
@@ -24,14 +25,16 @@ public class Recommender {
 	CrawlerController controller;
 	WingAnalyzer wingAnalyzer;
 	public static HashMap<String, String> newsSites;
+	private static ArrayDeque<String> siteDeque;
+	private String res;
+	private Thread[] threads;
 	static {
 		newsSites = new HashMap<String, String>();
 		newsSites.put("https://www.vox.com/", WingAnalyzer.WINGS.get(0));
 		newsSites.put("https://www.economist.com/", WingAnalyzer.WINGS.get(1));
 		newsSites.put("https://www.infowars.com/", WingAnalyzer.WINGS.get(2));
 	}
-	public static String currentWing;
-	public static int docId = 0;
+	private static final int NUM_THREADS = 3;
 	
 	public Recommender() {
 		authorName1 = "Avery Vine";
@@ -49,46 +52,24 @@ public class Recommender {
 
 	@GET
 	@Path("admin")
-	public Response admin(@QueryParam("adminRequest") String adminRequest) {
+	public String admin(@QueryParam("adminRequest") String adminRequest) {
 		System.out.println("admin -> " + adminRequest);
-		Response res = Response.ok().build();
+		res = "";
 		switch (adminRequest) {
 			case "reset":
-				Database.getInstance().clear();
-				for (String site : newsSites.keySet()) {
-					currentWing = newsSites.get(site);
-					try {
-						controller = new CrawlerController(site);
-						controller.crawl();
-					} catch (Exception e) {
-						System.err.println("Error crawling data with site: " + site);
-						e.printStackTrace();
-						res = Response.serverError().build();
-					}
+				crawl();
+				if (res.contains("200")) {
+					train();	
 				}
-				wingAnalyzer = new WingAnalyzer(WingAnalyzer.WINGS);
-				wingAnalyzer.train();
+				break;
+			case "analysis":
+				analyze();
 				break;
 			default:
-				res = Response.noContent().build();
+				res = JSONify("statusCode", "500");
 		}
 		return res;
 	}
-	
-	@GET
-	@Path("analysis")
-	@Produces(MediaType.APPLICATION_JSON)
-	public String url() {
-		String res = "clasConditionalProbabalities is " + Database.getInstance().getClassConditionalProbabilities().toString()
-					+ " classPriors are " + Database.getInstance().getClassPriors().toString();
-		return res;
-	}
-	
-	/*
-	 * Description: calculates sentiments for users' reviews and groups users into communities based off preferred genre
-	 * Input: none
-	 * Return: html representation of the users and the fields used for community calculation
-	 */
 
 	@GET
 	@Path("url")
@@ -96,40 +77,96 @@ public class Recommender {
 	public String url(@QueryParam("url") String url) {
 		System.out.println("url -> " + url);
 		wingAnalyzer = new WingAnalyzer();
-		String res = wingAnalyzer.analyze(url);
+		res = wingAnalyzer.analyze(url);
 		return res;
 	}
 	
-	/*
-	 * Description: retrieves the list of webpages
-	 * Input: none
-	 * Return: html representation of the list of webpages
-	 */
-	@GET
-	@Path("fetch")
-	@Produces(MediaType.TEXT_HTML)
-	public String fetch() {
-		System.out.println("fetch");
-		boolean setPrompts = true;
-		String res = "<table border> ";
-		res += WebPage.htmlTableHeader();
-		for (WebPage webpage: Database.getInstance().getWebPages()) {
-			res += webpage.htmlTableData(setPrompts);
+	private void crawl() {
+		Database.getInstance().clear();
+		siteDeque = new ArrayDeque<String>(newsSites.keySet());
+		threads = new Thread[NUM_THREADS];
+		for (int i = 0; i < NUM_THREADS; i++) {
+			threads[i] = new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					System.out.println("New thread started...");
+					String site;
+					while ((site = getNext()) != null) {
+						System.out.println("Crawling website: " + site);
+						try {
+							controller = new CrawlerController(site);
+							controller.crawl();
+						} catch (Exception e) {
+							System.err.println("Error crawling data with site: " + site);
+							e.printStackTrace();
+							res = JSONify("statusCode", "500");
+						}
+					}
+				}
+				
+			});
+			threads[i].start();
 		}
-		res += " </table>";
-		return wrapHTML("Fetch", res);
+		for (int i = 0; i < NUM_THREADS; i++) {
+			try {
+				threads[i].join();
+				System.out.println("Joined thread");
+			} catch (InterruptedException e) {
+				System.out.println("Unable to join threads");
+				e.printStackTrace();
+			}
+		}
+		System.out.println("All threads completed");
+		res = JSONify("statusCode", "200");
 	}
 	
-	/*
-	 * Description: wraps the body of an html document with the required tags
-	 * Input: the title of the page, the body of the page
-	 * Return: the wrapped page
-	 */
-	public String wrapHTML(String title, String body) {
-		return "<html> <head> <title> " + title + " </title> </head> <body> " + body + " </body> </html>";
+	private void train() {
+		wingAnalyzer = new WingAnalyzer(WingAnalyzer.WINGS);
+		wingAnalyzer.train();
 	}
 	
-	public static synchronized int getAndIncrementDocId() {
-		return ++docId;
+	private void analyze() {
+		try {
+			ArrayList<String> keys = new ArrayList<String>();
+			ArrayList<String> values = new ArrayList<String>();
+			keys.add("statusCode");
+			values.add("200");
+			keys.add("classConditionalProbabilities");
+			values.add(Database.getInstance().getClassConditionalProbabilities().toString());
+			keys.add("classPriors");
+			values.add(Database.getInstance().getClassPriors().toString());
+			res = JSONify(keys, values);
+		} catch (Exception e) {
+			res = JSONify("statusCode", "500");
+		}
+	}
+	
+	public static String JSONify(ArrayList<String> keys, ArrayList<String> values) {
+		String json = "{";
+		if (keys.size() == values.size()) {
+			for (int i = 0; i < keys.size(); i++) {
+				json += JSONify(keys.get(0), values.get(0));
+				if (i < keys.size() - 1) {
+					json += ", ";
+				}
+			}
+		}
+		json += "}";
+		return json;
+	}
+	
+	public static String JSONify(String key, String value) {
+		String json = "\"" + key + "\": \"" + value + "\"";
+		return json;
+	}
+	
+	private synchronized String getNext() {
+		System.out.println("Webpages left: " + siteDeque.size());
+		String site = null;
+		if (siteDeque.size() > 0) {
+			site = siteDeque.pop();
+		}
+		return site;
 	}
 }

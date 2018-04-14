@@ -28,6 +28,7 @@ public class Crawler extends WebCrawler {
 	long beginTime, diffTime;
 	private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg" + "|png|mp3|mp4|zip|gz))$");
 	ArrayList<String> saxParserMimeTypes;
+	private static int docId = 0;
 
 	/**
 	 * This method receives two parameters. The first parameter is the page in which
@@ -90,7 +91,14 @@ public class Crawler extends WebCrawler {
 			String html = htmlParseData.getHtml();
 			
 			if (title != "") {
-				WebPage webPage = new WebPage(Recommender.getAndIncrementDocId(), title, url, content, Recommender.currentWing); 
+				String wing = "neutral";
+				for (String site : Recommender.newsSites.keySet()) {
+					if (url.contains(site)) {
+						wing = Recommender.newsSites.get(site);
+						break;
+					}
+				}
+				WebPage webPage = new WebPage(getAndIncrementDocId(), title, url, content, wing);
 				System.out.println("Added webpage with docId: " + webPage.getDocId());
 				Database.getInstance().insert(webPage);
 			}
@@ -104,5 +112,13 @@ public class Crawler extends WebCrawler {
 		
 		diffTime = System.currentTimeMillis() - beginTime;
 		this.getMyController().getConfig().setPolitenessDelay((int) (diffTime * 100));
+	}
+	
+	private static synchronized int getAndIncrementDocId() {
+		return ++docId;
+	}
+	
+	public static void resetDocId() {
+		docId = 0;
 	}
 }

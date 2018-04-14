@@ -36,8 +36,8 @@ public abstract class NaiveBayes {
 	protected NaiveBayes(ArrayList<String> classes) {
 		this.classes = classes;
 		
-		stopWordPath = "/Users/maximkuzmenko/Desktop/School/Third Year/First Semester/COMP 4601/WingIt/Server/training/";
-		//stopWordPath = "/Users/AveryVine/Documents/School/Third Year/COMP4601/eclipse-workspace/COMP4601Assignment2/COMP4601-Assignment2/training/";
+//		stopWordPath = "/Users/maximkuzmenko/Desktop/School/Third Year/First Semester/COMP 4601/WingIt/Server/training/";
+		stopWordPath = "/Users/AveryVine/Documents/School/Third Year/COMP4601/eclipse-workspace/COMP4601Assignment2/COMP4601-Assignment2/training/";
 		
 		classPriors = new ArrayList<Double>();
 		classTexts = new ArrayList<ArrayList<String>>();

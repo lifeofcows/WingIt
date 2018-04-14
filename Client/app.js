@@ -9,6 +9,8 @@ const baseURL = "http://localhost:8080/WingIt";
 const urlPrefix = "/url/?url=";
 const adminPrefix = "/admin/?adminRequest=";
 
+var requestInProgress = false;
+
 //receive a port, or select default port
 app.set('port', (process.env.PORT || 5000));
 
@@ -22,14 +24,21 @@ app.use(function(req, res, next) {
 app.get(['/', '/index.html', '/index'], function(req, res) {
 	if (req.query.url === undefined) {
 		res.sendFile('index.html', { root: ROOT });
-	} else {
+	} else if (!requestInProgress) {
+		requestInProgress = true;
 		let targetURL = req.query.url;
 		console.log("Request url: " + baseURL + urlPrefix + targetURL);
 		request(baseURL + urlPrefix + targetURL, function(error, response, body) {
+			if (body && body.statusCode) {
+				console.log("Status code: " + body.statusCode);
+			}
 			console.log("Received data for url: " + body);
 			res.setHeader('Content-Type', 'application/json');
+			requestInProgress = false;
 			res.send(JSON.stringify(body));
 		});
+	} else {
+		console.log("Server request already in progress...");
 	}
 });
 
@@ -37,14 +46,21 @@ app.get(['/', '/index.html', '/index'], function(req, res) {
 app.get(['/admin.html', '/admin'], function(req, res) {
 	if (req.query.adminRequest === undefined) {
 		res.sendFile('admin.html', { root: ROOT });
-	} else {
+	} else if (!requestInProgress) {
+		requestInProgress = true;
 		let adminRequest = req.query.adminRequest;
 		console.log("Request url: " + baseURL + adminPrefix + adminRequest);
 		request(baseURL + adminPrefix + adminRequest, function(error, response, body) {
+			if (body && body.statusCode) {
+				console.log("Status code: " + body.statusCode);
+			}
 			console.log("Received data for url: " + body);
 			res.setHeader('Content-Type', 'application/json');
+			requestInProgress = false;
 			res.send(JSON.stringify(body));
 		});
+	} else {
+		console.log("Server request already in progress...");
 	}
 });
 

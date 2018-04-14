@@ -6,18 +6,13 @@ $(document).ready(function() {
         var commandBlock = $(this);
         var command = $(this).attr("id");
         $(this).on('click', function() {
+            console.log("Sending request");
             $.get(adminPrefix + command, function(data) {
+                console.log("Received data: " + data);
                 $(commandBlock).find(".check").fadeIn("slow", function() {
                     $(commandBlock).find(".check").fadeOut("slow");
                 });
             });
-
-            // $.get(baseURL + $(this).attr("id"), function(data) {
-            //     $(commandBlock).find(".check").fadeIn("slow", function() {
-            //         $(commandBlock).find(".check").fadeOut("slow", function() {
-            //         });
-            //     });
-            // });
         });
     });
 });
