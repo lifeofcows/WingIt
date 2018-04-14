@@ -63,7 +63,7 @@ public class Recommender {
 				}
 				break;
 			case "analysis":
-				analyze();
+				analysis();
 				break;
 			default:
 				res = JSONify("statusCode", "500");
@@ -126,7 +126,7 @@ public class Recommender {
 		wingAnalyzer.train();
 	}
 	
-	private void analyze() {
+	private void analysis() {
 		try {
 			ArrayList<String> keys = new ArrayList<String>();
 			ArrayList<String> values = new ArrayList<String>();

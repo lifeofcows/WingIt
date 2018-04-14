@@ -1,8 +1,14 @@
 package edu.carleton.comp4601.resources;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 public class WingAnalyzer extends NaiveBayes {
 	
@@ -47,14 +53,15 @@ public class WingAnalyzer extends NaiveBayes {
 	public String analyze(String url) {
 		ArrayList<String> keys = new ArrayList<String>();
 		ArrayList<String> values = new ArrayList<String>();
-		
-		//TODO: get text from url
-		String urlText = "this is a test";
-		
-		//TODO: store scores retrieved from processText
 		try {
 			
-			processText(urlText);
+			Document doc = Jsoup.connect(url).get();
+			String urlText = Jsoup.parse(doc.html()).text();
+			
+			System.out.println("Retrieved website html:");
+			System.out.println(urlText);
+			
+			processText(urlText, WINGS);
 			
 			//TODO: calculate wing based off score
 			String wing = "neutral";
