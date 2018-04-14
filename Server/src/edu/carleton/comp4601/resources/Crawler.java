@@ -1,5 +1,6 @@
 package edu.carleton.comp4601.resources;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -16,6 +17,7 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.xml.sax.ContentHandler;
 
 import edu.uci.ics.crawler4j.crawler.Page;
@@ -67,23 +69,15 @@ public class Crawler extends WebCrawler {
 	public void visit(Page page) {
 		String url = page.getWebURL().getURL();
 		System.out.println("URL: " + url);
-		String title = "";
+		String title = getPageTitle(url);
 		String content = "";
-
 		try {
-			InputStream input = TikaInputStream.get(new URL(page.getWebURL().getURL()));
-			ContentHandler contentHandler = new BodyContentHandler(-1);
-			Metadata metadata = new Metadata();
-			ParseContext parseContext = new ParseContext();
-			Parser parser = new AutoDetectParser();
-			parser.parse(input, contentHandler, metadata, parseContext);
-			title = metadata.get(Metadata.TITLE);
-			content = Jsoup.parse(contentHandler.toString()).text().trim().replaceAll(" +", " ");
-			input.close();
-		} catch (Exception e) {
+			Document doc = Jsoup.connect(url).get();
+			content = Jsoup.parse(doc.html()).text();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		
 		if (page.getParseData() instanceof HtmlParseData) {
 			// HTML parsing
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
@@ -111,10 +105,27 @@ public class Crawler extends WebCrawler {
 		}
 		
 		diffTime = System.currentTimeMillis() - beginTime;
-		this.getMyController().getConfig().setPolitenessDelay((int) (diffTime * 100));
+		this.getMyController().getConfig().setPolitenessDelay((int) (diffTime * 30));
+	}
+		
+	public static String getPageTitle(String url) {
+		String title = "";
+		try {
+			InputStream input = TikaInputStream.get(new URL(url));
+			ContentHandler contentHandler = new BodyContentHandler(-1);
+			Metadata metadata = new Metadata();
+			ParseContext parseContext = new ParseContext();
+			Parser parser = new AutoDetectParser();
+			parser.parse(input, contentHandler, metadata, parseContext);
+			title = metadata.get(Metadata.TITLE);
+			input.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return title;
 	}
 	
-	private static synchronized int getAndIncrementDocId() {
+	public static synchronized int getAndIncrementDocId() {
 		return ++docId;
 	}
 	

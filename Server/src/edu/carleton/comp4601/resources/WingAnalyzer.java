@@ -11,6 +11,8 @@ import java.util.Arrays;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import edu.uci.ics.crawler4j.url.WebURL;
+
 public class WingAnalyzer extends NaiveBayes {
 	
 	public static final String left = "left";
@@ -71,12 +73,16 @@ public class WingAnalyzer extends NaiveBayes {
 			
 			ArrayList<BigDecimal> wingSentiments = processText(urlText, WINGS);
 			
+			int maxIndex = 0;
 			for (int i = 0; i < wingSentiments.size(); i++) {
-				System.out.println("Wing sentiment for " + WINGS.get(i) + " is " + wingSentiments.get(i).doubleValue());
+				//System.out.println("Wing sentiment for " + WINGS.get(i) + " is " + wingSentiments.get(i).doubleValue());
+				maxIndex = wingSentiments.get(i).compareTo(wingSentiments.get(maxIndex)) == 1 ? i : maxIndex;
 			}
 			
-			//TODO: calculate wing based off score
-			String wing = "neutral";
+			//Get wing, then add page to list of pages to crawl
+			String wing = WINGS.get(maxIndex);
+	
+			//Database.getInstance().insert(new WebPage(Crawler.getAndIncrementDocId(), Crawler.getPageTitle(url), url, urlText, wing));
 			
 			keys.add("statusCode");
 			values.add("200");
