@@ -109,8 +109,8 @@ public class Crawler extends WebCrawler {
 			
 		}
 		
-		diffTime = System.currentTimeMillis() - beginTime;
-		this.getMyController().getConfig().setPolitenessDelay((int) (diffTime * 30));
+		//diffTime = System.currentTimeMillis() - beginTime;
+		//this.getMyController().getConfig().setPolitenessDelay((int) (diffTime * 30));
 	}
 		
 	public static String getPageTitle(String url) {
