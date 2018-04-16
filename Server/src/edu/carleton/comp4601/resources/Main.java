@@ -46,12 +46,20 @@ public class Main {
 	}
 	private static final int NUM_THREADS = 3;
 	
+	/*
+	 * Description: the constructor for the main application
+	 */
 	public Main() {
 		authorName1 = "Avery Vine";
 		authorName2 = "Maxim Kuzmenko";
 		name = "WingIt";
 	}
 
+	/*
+	 * Description: provides the name of the application
+	 * Input: none
+	 * Return: the name of the app as JSON
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getName() {
@@ -60,6 +68,11 @@ public class Main {
 		return res;
 	}
 
+	/*
+	 * Description: provides an interface for all admin-related functions
+	 * Input: the admin request to complete
+	 * Return: the JSON results of the given admin request
+	 */
 	@GET
 	@Path("admin")
 	public String admin(@QueryParam("adminRequest") String adminRequest) {
@@ -86,6 +99,11 @@ public class Main {
 		return res;
 	}
 
+	/*
+	 * Description: provides an interface for searching for the political bias of an article
+	 * Input: the url of the article to search
+	 * Return: the JSON results of the search, including political wing and alternate source recommendations
+	 */
 	@GET
 	@Path("url")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -96,6 +114,11 @@ public class Main {
 		return res;
 	}
 	
+	/*
+	 * Description: sets up the crawl to go through a list of seeds before training the Naive Bayes algorithm
+	 * Input: none
+	 * Return: none
+	 */
 	private void crawl() {
 		Database.getInstance().clear();
 		siteDeque = new ArrayDeque<String>(newsSites.keySet());
@@ -136,11 +159,21 @@ public class Main {
 		res = JSONify("statusCode", "200", true);
 	}
 	
+	/*
+	 * Description: trains the Naive Bayes to recognize political bias
+	 * Input: none
+	 * Return: none
+	 */
 	private void train() {
 		wingAnalyzer = new WingAnalyzer(WingAnalyzer.WINGS);
 		wingAnalyzer.train();
 	}
 	
+	/*
+	 * Description: prepares the class conditional probabilities and the class priors for the admin to see and monitor
+	 * Input: none
+	 * Return: none
+	 */
 	private void analysis() {
 		try {
 			ArrayList<String> keys = new ArrayList<String>();
@@ -157,6 +190,11 @@ public class Main {
 		}
 	}
 	
+	/*
+	 * Description: creates JSON out of a list of keys and a list of values
+	 * Input: the list of keys, the list of values
+	 * Return: the JSON containing the keys and values
+	 */
 	public static String JSONify(ArrayList<String> keys, ArrayList<String> values) {
 		String json = "";
 		if (keys.size() == values.size()) {
@@ -170,6 +208,11 @@ public class Main {
 		return wrapJSON(json);
 	}
 	
+	/*
+	 * Description: creates JSON out of a single key and value
+	 * Input: the key, the value, a boolean indicating whether it should be wrapped in curly braces
+	 * Return: the JSON containing the key and value
+	 */
 	public static String JSONify(String key, String value, boolean wrap) {
 		String json = "\"" + key + "\": ";
 		if (value.startsWith("{")) {
@@ -183,6 +226,11 @@ public class Main {
 		return json;
 	}
 	
+	/*
+	 * Description: creates JSON array out of a single key and a list of values
+	 * Input: the key, the list of values, a boolean indicating whether it should be wrapped in curly braces
+	 * Return: the JSON containing the key and values
+	 */
 	public static String JSONify(String key, List<String> list, boolean wrap) {
 		String json = "\"" + key + "\": [";
 		for (int i = 0; i < list.size(); i++) {

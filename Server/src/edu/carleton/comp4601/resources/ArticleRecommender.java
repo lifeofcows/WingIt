@@ -10,7 +10,11 @@ public class ArticleRecommender {
 	private static double THRESHOLD = 0.2;
 	private static int MAX_RECOMMENDATIONS = 5;
 	
-	//find articles with relevant title
+	/*
+	 * Description: returns a selection of articles of varying political bias based off the provided article
+	 * Input: the url of the article being searched
+	 * Output: a string containing the list of recommendations
+	 */
 	public static String recommendArticles(String url) {
 		HashMap<String, ArrayList<String>> wingArticleUrls = new HashMap<String, ArrayList<String>>();
 		for (String wing : WingAnalyzer.WINGS) {

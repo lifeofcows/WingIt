@@ -39,6 +39,11 @@ public class Database {
 		webpageCollection.replaceOne(new Document("docId", webpage.getDocId()), serialize(webpage), new UpdateOptions().upsert(true));
 	}
 	
+	/*
+	 * Description: inserts the class conditional probabilities and the class priors of our Naive Bayes calculation into the database for later use
+	 * Input: the list of class conditional probabilities, the list of class priors
+	 * Return: none
+	 */
 	public synchronized void insert(ArrayList<HashMap<String, Double>> classConditionalProbabilities, ArrayList<Double> classPriors) {
 		analyzerCollection.drop();
 		analyzerCollection = database.getCollection("analyzerData");
@@ -68,6 +73,11 @@ public class Database {
 		return null;
 	}
 	
+	/*
+	 * Description: retrieves the class conditional probabilities from the database
+	 * Input: none
+	 * Return: the list of class conditional probabilities
+	 */
 	public ArrayList<HashMap<String, Double>> getClassConditionalProbabilities() {
 		FindIterable<Document> result = analyzerCollection.find();
 		ArrayList<HashMap<String, Double>> classConditionalProbabilities = new ArrayList<HashMap<String, Double>>();
@@ -119,7 +129,7 @@ public class Database {
 	}
 
 	/*
-	 * Description: drops the content of the database
+	 * Description: drops the content of the database and resets the crawler docId
 	 * Input: none
 	 * Return: none
 	 */
@@ -129,22 +139,11 @@ public class Database {
 		analyzerCollection.drop();
 	}
 	
-
 	/*
-	 * Description: retrieves a webpage by name from the database
-	 * Input: the name of the webpage
+	 * Description: retrieves a webpage by url from the database
+	 * Input: the url of the webpage
 	 * Return: the webpage
 	 */
-	public WebPage getWebPage(String name) {
-		Document query = new Document("name", name);
-		FindIterable<Document> result = webpageCollection.find(query);
-		Document doc = result.first();
-		if (doc != null) {
-			return deserializeWebPage(doc);
-		}
-		return null;
-	}
-	
 	public WebPage getWebPageByURL(String url) {
 		Document query = new Document("url", url);
 		FindIterable<Document> result = webpageCollection.find(query);
@@ -154,7 +153,6 @@ public class Database {
 		}
 		return null;
 	}
-	
 	
 	/*
 	 * Description: retrieves a list of all of the webpages in the database
