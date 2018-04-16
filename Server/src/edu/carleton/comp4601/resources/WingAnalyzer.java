@@ -16,9 +16,9 @@ import edu.uci.ics.crawler4j.url.WebURL;
 public class WingAnalyzer extends NaiveBayes {
 	
 	public static final String left = "left";
-	public static final String neutral = "neutral";
+	public static final String centrist = "centrist";
 	public static final String right = "right";
-	public static final ArrayList<String> WINGS = new ArrayList<String>(Arrays.asList(left, neutral, right));
+	public static final ArrayList<String> WINGS = new ArrayList<String>(Arrays.asList(left, centrist, right));
 	
 	private ArrayDeque<WebPage> webpages;
 	
@@ -88,20 +88,23 @@ public class WingAnalyzer extends NaiveBayes {
 			//Get wing, then add page to list of pages to crawl
 			String wing = WINGS.get(maxIndex);
 	
+			String recommendations = ArticleRecommender.recommendArticles(url);
+			System.out.println("recommendations are " + recommendations);
 			//Database.getInstance().insert(new WebPage(Crawler.getAndIncrementDocId(), Crawler.getPageTitle(url), url, urlText, wing));
 			
 			keys.add("statusCode");
 			values.add("200");
 			keys.add("wing");
 			values.add(wing);
-			
+			keys.add("recommendations");
+			values.add(recommendations);
 		} catch (Exception e) {
 			e.printStackTrace();
 			keys.add("statusCode");
 			values.add("500");
 		}
 		
-		return Recommender.JSONify(keys, values);
+		return Main.JSONify(keys, values);
 	}
 	
 	private synchronized WebPage getNext() {

@@ -97,7 +97,7 @@ public class Database {
 	private Document serialize(WebPage webpage) {
 		Document doc = new Document();
 		doc.put("docId", webpage.getDocId());
-		doc.put("name", webpage.getName());
+		doc.put("name", webpage.getTitle());
 		doc.put("url", webpage.getUrl());
 		doc.put("content", webpage.getContent());
 		doc.put("wing", webpage.getWing());
@@ -144,6 +144,17 @@ public class Database {
 		}
 		return null;
 	}
+	
+	public WebPage getWebPageByURL(String url) {
+		Document query = new Document("url", url);
+		FindIterable<Document> result = webpageCollection.find(query);
+		Document doc = result.first();
+		if (doc != null) {
+			return deserializeWebPage(doc);
+		}
+		return null;
+	}
+	
 	
 	/*
 	 * Description: retrieves a list of all of the webpages in the database

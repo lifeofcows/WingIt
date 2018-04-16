@@ -5,15 +5,15 @@ import java.util.HashSet;
 public class WebPage {
 
 	private int docId;
-	private String name, url, genre, content, html, wing;
+	private String title, url, genre, content, html, wing;
 	private HashSet<String> users;
 	
 	/*
 	 * Description: a webpage is a representation of a page containing reviews for a particular movie
 	 */
-	public WebPage(int docId, String name, String url, String content, String wing) {
+	public WebPage(int docId, String title, String url, String content, String wing) {
 		this.docId = docId;
-		this.name = name;
+		this.title = title;
 		this.url = url;
 		this.content = content;
 		this.wing = wing;
@@ -37,8 +37,8 @@ public class WebPage {
 	 * Input: none
 	 * Return: the name of the webpage
 	 */
-	public String getName() {
-		return name;
+	public String getTitle() {
+		return title;
 	}
 	
 	/*
@@ -104,9 +104,9 @@ public class WebPage {
 	 */
 	public String htmlTableData(boolean setPrompts) {
 		if (setPrompts) {
-			return "<tr> <td> " + docId + " </td> <td> " + name + " </td> <td> <a onclick='parent.promptForUser(\"" + name + "\");' href='javascript:void(0);'> " + url + " </a> </td> <td> " + genre + " </td> </tr> ";
+			return "<tr> <td> " + docId + " </td> <td> " + title + " </td> <td> <a onclick='parent.promptForUser(\"" + title + "\");' href='javascript:void(0);'> " + url + " </a> </td> <td> " + genre + " </td> </tr> ";
 		} else {
-			return "<tr> <td> " + docId + " </td> <td> " + name + " </td> <td> <a href='" + url + "'> " + url + " </a> </td> <td> " + genre + " </td> </tr> ";	
+			return "<tr> <td> " + docId + " </td> <td> " + title + " </td> <td> <a href='" + url + "'> " + url + " </a> </td> <td> " + genre + " </td> </tr> ";	
 		}
 	}
 	
