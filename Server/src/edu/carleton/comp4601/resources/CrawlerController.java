@@ -50,7 +50,7 @@ public class CrawlerController {
 	}
 	
 	/*
-	 * Description: wipes the database and starts the web crawler
+	 * Description: starts the web crawler
 	 * Input: none
 	 * Return: none
 	 */

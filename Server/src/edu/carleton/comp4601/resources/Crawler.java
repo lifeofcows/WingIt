@@ -104,6 +104,11 @@ public class Crawler extends WebCrawler {
 //		this.getMyController().getConfig().setPolitenessDelay((int) (diffTime * 30));
 	}
 		
+	/*
+	 * Description: gets the title of a webpage using the TikaParser for later use
+	 * Input: the url of the website/article for which to get a title
+	 * Output: the title of the webpage
+	 */
 	public static String getPageTitle(String url) {
 		String title = "";
 		try {
@@ -124,10 +129,20 @@ public class Crawler extends WebCrawler {
 		return title;
 	}
 	
+	/*
+	 * Description: ensures a synchronized docId is being used across all crawlers
+	 * Input: none
+	 * Return: the docId
+	 */
 	public static synchronized int getAndIncrementDocId() {
 		return ++docId;
 	}
 	
+	/*
+	 * Description: ensures a synchronized docId is being used across all crawlers
+	 * Input: none
+	 * Return: none
+	 */
 	public static void resetDocId() {
 		docId = 0;
 	}
