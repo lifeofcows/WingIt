@@ -15,8 +15,8 @@ import java.util.Map.Entry;
 
 public abstract class NaiveBayes {
 	
-	protected String stopWordPath = "/Users/maximkuzmenko/Desktop/School/Third Year/First Semester/COMP 4601/WingIt/Server/training/";
-	//protected String stopWordPath = "/Users/AveryVine/Documents/School/Third Year/COMP4601/eclipse-workspace/COMP4601Assignment2/COMP4601-Assignment2/training/";
+	protected static String stopWordPath = "/Users/maximkuzmenko/Desktop/School/Third Year/First Semester/COMP 4601/WingIt/Server/training/";
+	//protected static String stopWordPath = "/Users/AveryVine/Documents/School/Third Year/COMP4601/eclipse-workspace/COMP4601Assignment2/COMP4601-Assignment2/training/";
 	protected ArrayList<String> classes;
 	protected ArrayList<Double> classPriors;
 	protected ArrayList<ArrayList<String>> classTexts;
@@ -24,7 +24,7 @@ public abstract class NaiveBayes {
 	protected LinkedHashMap<String, Integer> topWords;
 	protected ArrayList<LinkedHashMap<String, Integer>> classWordMaps;
 	protected ArrayList<HashMap<String, Double>> classConditionalProbabilities;
-	protected HashSet<String> stopWords;
+	protected static HashSet<String> stopWords;
 	protected int totalClassDocs, totalVocabulary;
 	
 	protected NaiveBayes() {
@@ -99,7 +99,7 @@ public abstract class NaiveBayes {
 	 * Input: none
 	 * Return: none
 	 */
-	private void readStopWords() {
+	private static void readStopWords() {
 		stopWords = new HashSet<String>();
 		
 		File file = new File(stopWordPath + "stopwords.txt");
@@ -157,7 +157,7 @@ public abstract class NaiveBayes {
 	 * Input: the text to clean
 	 * Return: the cleaned text
 	 */
-	protected String cleanText(String text) {	
+	public static String cleanText(String text) {	
 		readStopWords();
 		
 		text = text.toLowerCase().replaceAll("[^A-Za-z0-9 ]", " ").trim().replaceAll(" +", " ");

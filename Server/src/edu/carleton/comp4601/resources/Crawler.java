@@ -5,10 +5,14 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
@@ -19,6 +23,7 @@ import org.apache.tika.sax.BodyContentHandler;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.XMLReader;
 
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
@@ -46,7 +51,7 @@ public class Crawler extends WebCrawler {
 		String href = url.getURL().toLowerCase();
 		
 		boolean urlMatches = false;
-		for (String site : Recommender.newsSites.keySet()) {
+		for (String site : Main.newsSites.keySet()) {
 			if (href.startsWith(site)) {
 				urlMatches = true; 
 				break;
@@ -85,10 +90,10 @@ public class Crawler extends WebCrawler {
 			String html = htmlParseData.getHtml();
 			
 			if (title != "") {
-				String wing = "neutral";
-				for (String site : Recommender.newsSites.keySet()) {
+				String wing = "centrist";
+				for (String site : Main.newsSites.keySet()) {
 					if (url.contains(site)) {
-						wing = Recommender.newsSites.get(site);
+						wing = Main.newsSites.get(site);
 						break;
 					}
 				}
@@ -117,7 +122,9 @@ public class Crawler extends WebCrawler {
 			ParseContext parseContext = new ParseContext();
 			Parser parser = new AutoDetectParser();
 			parser.parse(input, contentHandler, metadata, parseContext);
-			title = metadata.get(Metadata.TITLE);
+			
+			title = NaiveBayes.cleanText(metadata.get(Metadata.TITLE)); //remove stop words from title
+			
 			input.close();
 		} catch (Exception e) {
 			e.printStackTrace();

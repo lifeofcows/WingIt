@@ -16,9 +16,9 @@ import edu.uci.ics.crawler4j.url.WebURL;
 public class WingAnalyzer extends NaiveBayes {
 	
 	public static final String left = "left";
-	public static final String neutral = "neutral";
+	public static final String centrist = "centrist";
 	public static final String right = "right";
-	public static final ArrayList<String> WINGS = new ArrayList<String>(Arrays.asList(left, neutral, right));
+	public static final ArrayList<String> WINGS = new ArrayList<String>(Arrays.asList(left, centrist, right));
 	
 	private ArrayDeque<WebPage> webpages;
 	
@@ -88,14 +88,13 @@ public class WingAnalyzer extends NaiveBayes {
 			values.add("200");
 			keys.add("wing");
 			values.add(wing);
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 			keys.add("statusCode");
 			values.add("500");
 		}
 		
-		return Recommender.JSONify(keys, values);
+		return Main.JSONify(keys, values);
 	}
 	
 	private synchronized WebPage getNext() {
