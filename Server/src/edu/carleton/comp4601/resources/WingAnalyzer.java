@@ -22,15 +22,13 @@ public class WingAnalyzer extends NaiveBayes {
 		super();
 	}
 
-	/*
-	 * Description: this class implements the Naive Bayes algorithm with the purpose of calculating movie genres
-	 */
+
 	public WingAnalyzer(ArrayList<String> WINGS) {
 		super(WINGS);
 	}
 	
 	/*
-	 * Description: analyzes the contents of all of the movie webpages to determine their genres
+	 * Description: trains the system using the crawled webpages from the database; inserts a response code of 200 to Main.res if successful, 500 if unsuccessful.
 	 * Input: none
 	 * Return: none
 	 */
@@ -60,10 +58,22 @@ public class WingAnalyzer extends NaiveBayes {
 		
 	}
 	
+	
+	/*
+	 * Description: computes a logarithm with a custom base
+	 * Input: base and number to be taken the logarithm with
+	 * Return: a double representing the output of the logarithm
+	 */
 	public double logOfBase(int base, int num) {
 	    return Math.log(num) / Math.log(base);
 	}
 	
+	
+	/*
+	 * Description: function gets the number of decimal places in a big decimal
+	 * Input: a bigDecimal number
+	 * Return: an integer representing the number after the "-" if exists; otherwise return 1.
+	 */
 	int getNumberOfDecimalPlaces(BigDecimal bigDecimal) {
 	    String string = bigDecimal.toEngineeringString();
 	    int index = string.indexOf("-");
@@ -76,6 +86,12 @@ public class WingAnalyzer extends NaiveBayes {
 	    return Integer.parseInt(string.substring(index + 1, string.length()));
 	}
 	
+	
+	/*
+	 * Description: analyzes a webpage article and returns response codes and JSON string containing various political analytics data about the article
+	 * Input: article url as string
+	 * Return: JSON string containing various political anlaytics data about the article
+	 */
 	public String analyze(String url) {
 		ArrayList<String> keys = new ArrayList<String>();
 		ArrayList<String> values = new ArrayList<String>();
@@ -154,6 +170,12 @@ public class WingAnalyzer extends NaiveBayes {
 		return Main.JSONify(keys, values);
 	}
 	
+	
+	/*
+	 * Description: returns the next webpage from the queue; use for multithreading
+	 * Input: None
+	 * Return: Next webpage from the queue
+	 */
 	private synchronized WebPage getNext() {
 		System.out.println("Webpages left: " + webpages.size());
 		WebPage webpage = null;

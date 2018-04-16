@@ -51,33 +51,6 @@ public class WebPage {
 	}
 	
 	/*
-	 * Description: retrieves the list of users who wrote reviews on a webpage
-	 * Input: none
-	 * Return: the list of users
-	 */
-	public HashSet<String> getUsers() {
-		return users;
-	}
-	
-	/*
-	 * Description: sets the genre of the movie on a webpage
-	 * Input: the genre to be set
-	 * Return: none
-	 */
-	public void setGenre(String genre) {
-		this.genre = genre;
-	}
-	
-	/*
-	 * Description: retrieves the genre of the movie on a webpage
-	 * Input: none
-	 * Return: the genre of the movie
-	 */
-	public String getGenre() {
-		return genre;
-	}
-	
-	/*
 	 * Description: retrieves the content of a webpage
 	 * Input: none
 	 * Return: the content of the webpage
@@ -94,8 +67,6 @@ public class WebPage {
 	public String getHTML() {
 		return html;
 	}
-	
-	
 	
 	/*
 	 * Description: constructs an html table representation of the data in this class

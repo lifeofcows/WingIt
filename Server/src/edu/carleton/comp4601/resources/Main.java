@@ -198,11 +198,21 @@ public class Main {
 		return json;
 	}
 	
+	/*
+	 * Description: Assumes the string passed is JSON format; adds curly braces to the beginning and end of the string.
+	 * Input: String (assumed to be JSON)
+	 * Return: the JSON wrapped with curly braces
+	 */
 	private static String wrapJSON(String json) {
 		json = "{" + json + "}";
 		return json;
 	}
 	
+	/*
+	 * Description: gets the next website URL in the queue if exists and returns in a synchronized fashion
+	 * Input: None
+	 * Return: gets the next webpage URL in the queue if exists and returns
+	 */
 	private synchronized String getNext() {
 		System.out.println("Webpages left: " + siteDeque.size());
 		String site = null;

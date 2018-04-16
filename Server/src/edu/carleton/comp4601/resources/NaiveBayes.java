@@ -46,6 +46,11 @@ public abstract class NaiveBayes {
 		readStopWords();
 	}
 	
+	/*
+	 * Description: this class calculates conditional word probabilities and priors given the class text lists
+	 * Input: none
+	 * Return: none
+	 */
 	public void analyzeTrainingData(ArrayList<ArrayList<String>> classTexts) {
 		this.classTexts = classTexts;
 		countClassDocs();
@@ -78,6 +83,12 @@ public abstract class NaiveBayes {
 		return scores;
 	}
 	
+	
+	/*
+	 * Description: Counts the number of total documents in class texts passed
+	 * Input: None
+	 * Return: None
+	 */
 	private void countClassDocs() {
 		totalClassDocs = 0;
 		for (ArrayList<String> arr : classTexts) {
@@ -85,10 +96,21 @@ public abstract class NaiveBayes {
 		}
 	}
 	
+	
+	/*
+	 * Description: Sets class conditional probabilities
+	 * Input: class conditional probabilities as ArrayList<HashMap<String, Double>>
+	 * Return: None
+	 */
 	public void setClassConditionalProbabilities(ArrayList<HashMap<String, Double>> classConditionalProbabilities) {
 		this.classConditionalProbabilities = classConditionalProbabilities;
 	}
 	
+	/*
+	 * Description: Sets class priors
+	 * Input: class priors as ArrayList<Double>
+	 * Return: None
+	 */
 	public void setClassPriors(ArrayList<Double> classPriors) {
 		this.classPriors = classPriors;
 	}
