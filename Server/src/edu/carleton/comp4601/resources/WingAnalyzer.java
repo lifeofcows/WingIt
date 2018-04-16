@@ -57,9 +57,9 @@ public class WingAnalyzer extends NaiveBayes {
 		try {
 			analyzeTrainingData(classTexts);
 			Database.getInstance().insert(classConditionalProbabilities, classPriors);
-			Recommender.res = Recommender.JSONify("statusCode", "200", true);
+			Main.res = Main.JSONify("statusCode", "200", true);
 		} catch (Exception e) {
-			Recommender.res = Recommender.JSONify("statusCode", "500", true);
+			Main.res = Main.JSONify("statusCode", "500", true);
 		}
 		
 	}

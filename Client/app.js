@@ -53,16 +53,21 @@ app.get(['/admin.html', '/admin'], function(req, res) {
 });
 
 processResponse = function(body, res) {
-	var result = JSON.parse(body);
-	console.log("Received data for url: " + result);
-	res.setHeader('Content-Type', 'application/json');
-	requestInProgress = false;
-	if (result && result.statusCode) {
-		console.log("Status code: " + result.statusCode);
-		res.send(JSON.stringify(result));
+	if (body) {
+		var result = JSON.parse(body);
+		console.log("Received data for url: " + result);
+		res.setHeader('Content-Type', 'application/json');
+		requestInProgress = false;
+		if (result && result.statusCode) {
+			console.log("Status code: " + result.statusCode);
+			res.send(JSON.stringify(result));
+		} else {
+			console.log("Setting status code: 500");
+			res.send("{\"statusCode\": \"500\"}");
+		}
 	} else {
 		console.log("Setting status code: 500");
-		res.send("{\"statusCode\": \"500\"}");
+			res.send("{\"statusCode\": \"500\"}");
 	}
 }
 

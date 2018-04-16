@@ -39,7 +39,7 @@ public class CrawlerController {
 		config.setCrawlStorageFolder(crawlStorageFolder);
 		config.setMaxDepthOfCrawling(maxDepthOfCrawling);
 		config.setIncludeBinaryContentInCrawling(true);
-		config.setMaxPagesToFetch(20);
+		config.setMaxPagesToFetch(40);
 
 		PageFetcher pageFetcher = new PageFetcher(config);
 		RobotstxtConfig robotstxtConfig = new RobotstxtConfig();

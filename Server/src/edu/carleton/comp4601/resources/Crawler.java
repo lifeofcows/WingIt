@@ -2,17 +2,9 @@ package edu.carleton.comp4601.resources;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.Set;
 import java.util.regex.Pattern;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
@@ -23,7 +15,6 @@ import org.apache.tika.sax.BodyContentHandler;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.XMLReader;
 
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
@@ -110,7 +101,7 @@ public class Crawler extends WebCrawler {
 		}
 		
 		diffTime = System.currentTimeMillis() - beginTime;
-		this.getMyController().getConfig().setPolitenessDelay((int) (diffTime * 30));
+//		this.getMyController().getConfig().setPolitenessDelay((int) (diffTime * 30));
 	}
 		
 	public static String getPageTitle(String url) {
