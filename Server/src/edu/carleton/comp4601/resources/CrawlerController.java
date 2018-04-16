@@ -4,9 +4,6 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -28,6 +25,7 @@ public class CrawlerController {
 	String crawlStorageFolder = "data/crawl/root";
 	public static String crawlBaseURL = "";
 	int maxDepthOfCrawling = 10;
+	int numberOfPagesToCrawl = 40;
 
 	/*
 	 * Description: this class prepares and controls the web crawler
@@ -39,7 +37,7 @@ public class CrawlerController {
 		config.setCrawlStorageFolder(crawlStorageFolder);
 		config.setMaxDepthOfCrawling(maxDepthOfCrawling);
 		config.setIncludeBinaryContentInCrawling(true);
-		config.setMaxPagesToFetch(40);
+		config.setMaxPagesToFetch(60);
 
 		PageFetcher pageFetcher = new PageFetcher(config);
 		RobotstxtConfig robotstxtConfig = new RobotstxtConfig();

@@ -96,10 +96,12 @@ public class Crawler extends WebCrawler {
 			// Output for debugging purposes
 			System.out.println("Text length: " + text.length());
 			System.out.println("Html length: " + html.length());
-			//System.out.println("Number of outgoing links: " + outgoingUrls.size());	
-		}		
-		//diffTime = System.currentTimeMillis() - beginTime;
-		//this.getMyController().getConfig().setPolitenessDelay((int) (diffTime * 30));
+			//System.out.println("Number of outgoing links: " + outgoingUrls.size());
+			
+		}
+		
+		diffTime = System.currentTimeMillis() - beginTime;
+//		this.getMyController().getConfig().setPolitenessDelay((int) (diffTime * 30));
 	}
 		
 	public static String getPageTitle(String url) {
@@ -112,9 +114,10 @@ public class Crawler extends WebCrawler {
 			Parser parser = new AutoDetectParser();
 			parser.parse(input, contentHandler, metadata, parseContext);
 			
+			input.close();
+			
 			title = NaiveBayes.cleanText(metadata.get(Metadata.TITLE)); //remove stop words from title
 			
-			input.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

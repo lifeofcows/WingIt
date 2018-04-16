@@ -33,10 +33,16 @@ public class Main {
 		newsSites = new HashMap<String, String>();
 		newsSites.put("https://www.vox.com/", WingAnalyzer.left);
 		newsSites.put("https://www.buzzfeed.com/", WingAnalyzer.left);
-		newsSites.put("https://www.economist.com/news", WingAnalyzer.centrist);
+		newsSites.put("https://www.washingtonpost.com/", WingAnalyzer.left);
+		newsSites.put("https://www.cnn.com/", WingAnalyzer.left);
+		newsSites.put("https://www.economist.com/", WingAnalyzer.centrist);
 		newsSites.put("https://www.reuters.com/", WingAnalyzer.centrist);
+		newsSites.put("https://apnews.com/", WingAnalyzer.centrist);
+		newsSites.put("https://www.usatoday.com/", WingAnalyzer.centrist);
 		newsSites.put("https://www.infowars.com/", WingAnalyzer.right);
 		newsSites.put("http://www.breitbart.com/", WingAnalyzer.right);
+		newsSites.put("https://www.wsj.com/", WingAnalyzer.right);
+		newsSites.put("https://www.nationalreview.com/", WingAnalyzer.right);
 	}
 	private static final int NUM_THREADS = 3;
 	
@@ -75,6 +81,8 @@ public class Main {
 			default:
 				res = JSONify("statusCode", "500", true);
 		}
+		System.out.println("Returning response:");
+		System.out.println(res);
 		return res;
 	}
 

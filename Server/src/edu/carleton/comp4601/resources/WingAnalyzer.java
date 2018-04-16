@@ -1,20 +1,13 @@
 package edu.carleton.comp4601.resources;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.MathContext;
 import java.math.RoundingMode;
-import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-
-import edu.uci.ics.crawler4j.url.WebURL;
 
 public class WingAnalyzer extends NaiveBayes {
 	

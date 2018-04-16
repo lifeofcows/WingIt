@@ -4,17 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 public class ArticleRecommender {
 	
-	private static double threshold = 0.15; 
+	private static double THRESHOLD = 0.2;
+	private static int MAX_RECOMMENDATIONS = 5;
 	
-	public ArticleRecommender() {
-		
-	}
-	
-	//find articles with relevant title 
+	//find articles with relevant title
 	public static String recommendArticles(String url) {
 		HashMap<String, ArrayList<String>> wingArticleUrls = new HashMap<String, ArrayList<String>>();
 		for (String wing : WingAnalyzer.WINGS) {
@@ -26,17 +22,19 @@ public class ArticleRecommender {
 		ArrayList<WebPage> articles = Database.getInstance().getWebPages();
 		for (WebPage article : articles) {
 			if (!Main.newsSites.containsKey(article.getUrl())) {
-				HashSet<String> otherWords = new HashSet<String>(Arrays.asList(article.getTitle().split(" ")));
-				int matchingWords = 0;
-				for (String word : otherWords) {
-					if (queriedWords.contains(word)) {
-						matchingWords++;
+				if (wingArticleUrls.get(article.getWing()).size() < MAX_RECOMMENDATIONS) {
+					HashSet<String> otherWords = new HashSet<String>(Arrays.asList(article.getTitle().split(" ")));
+					int matchingWords = 0;
+					for (String word : queriedWords) {
+						if (otherWords.contains(word)) {
+							matchingWords++;
+						}
+					}
+					double matchingWordRatio = ((double) matchingWords)/queriedWords.size();
+					if (matchingWordRatio >= THRESHOLD) {
+						wingArticleUrls.get(article.getWing()).add("<a href=\'" + article.getUrl() + "\'>" + article.getUrl() + "</a>");
 					}
 				}
-				double matchingWordRatio = ((double) matchingWords)/otherWords.size();
-				if (matchingWordRatio >= threshold) {
-					wingArticleUrls.get(article.getWing()).add("<a href=\'" + article.getUrl() + "\'>" + article.getUrl() + "</a>");
-				}	
 			}
 		}
 		
