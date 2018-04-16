@@ -27,7 +27,7 @@ public class Recommender {
 	WingAnalyzer wingAnalyzer;
 	public static HashMap<String, String> newsSites;
 	private static ArrayDeque<String> siteDeque;
-	private String res;
+	public static String res;
 	private Thread[] threads;
 	static {
 		newsSites = new HashMap<String, String>();
@@ -64,7 +64,7 @@ public class Recommender {
 			case "reset":
 				crawl();
 				if (res.contains("200")) {
-					train();	
+					train();
 				}
 				break;
 			case "re-train":

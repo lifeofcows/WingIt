@@ -10,6 +10,7 @@ body {
     float: left;
     background: #f2f2f2;
     font-family: 'Open Sans', sans-serif;
+    text-align: center;
 }
 
 h1 {
@@ -17,12 +18,15 @@ h1 {
 }
 
 .wrap {
+    display: inline-block;
     width: 80%;
-    position: absolute;
-    top: 15%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
+}
+
+.results {
+    width: 80%;
+    display: none;
+    position: relative;
+}
 
 .command-table {
   width: 80%;

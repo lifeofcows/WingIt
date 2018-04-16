@@ -54,8 +54,14 @@ public class WingAnalyzer extends NaiveBayes {
 			classTexts.get(WINGS.indexOf(webpage.getWing())).add(webpage.getContent());
 		}
 		
-		analyzeTrainingData(classTexts);
-		Database.getInstance().insert(classConditionalProbabilities, classPriors);
+		try {
+			analyzeTrainingData(classTexts);
+			Database.getInstance().insert(classConditionalProbabilities, classPriors);
+			Recommender.res = Recommender.JSONify("statusCode", "200", true);
+		} catch (Exception e) {
+			Recommender.res = Recommender.JSONify("statusCode", "500", true);
+		}
+		
 	}
 	
 	public String analyze(String url) {

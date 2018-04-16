@@ -9,16 +9,16 @@ $(document).ready(function() {
             $.get(urlPrefix + targetURL, function(data) {
                 if (data.statusCode) {
                     console.log("Received data with status code: " + data.statusCode);
-                    // presentData(data);
-                    var temp = {"statusCode": 200,
-                                "wing": "left",
-                                "recommendations": {
-                                    "left": ["link1", "link2", "link3"],
-                                    "centrist": ["link1", "link2", "link3"],
-                                    "right": ["link1", "link2", "link3"]
-                                }
-                            }
-                    presentData(temp);
+                    presentData(data);
+                    // var test = {"statusCode": 200,
+                    //             "wing": "left",
+                    //             "recommendations": {
+                    //                 "left": ["link1", "link2", "link3"],
+                    //                 "centrist": ["link1", "link2", "link3"],
+                    //                 "right": ["link1", "link2", "link3"]
+                    //             }
+                    //         }
+                    // presentData(test);
                 } else {
                     presentData("{\"statusCode\": \"500\"}");
                 }
@@ -42,7 +42,8 @@ $(document).ready(function() {
             if (data.recommendations) {
                 console.log("Recommendations found");
 
-                var html = "<table border style=\"margin-left: auto; margin-right: auto; width: 80%;\"> <tr> <th> Wing </th> <th> Recommendation </th> </tr> ";
+                var html = "<table border style=\"margin-left: auto; margin-right: auto; width: 80%;\"> ";
+                html += "<tr> <th> Wing </th> <th> Recommendation </th> </tr> ";
 
                 Object.keys(data.recommendations).forEach(function(recommendationWing) {
 
