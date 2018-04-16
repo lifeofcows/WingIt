@@ -12,6 +12,7 @@ $(document).ready(function() {
                     presentData(data);
                     // var test = {"statusCode": 200,
                     //             "wing": "left",
+                    //             "wingPercentage": 27,
                     //             "recommendations": {
                     //                 "left": ["link1", "link2", "link3"],
                     //                 "centrist": ["link1", "link2", "link3"],
@@ -38,6 +39,29 @@ $(document).ready(function() {
             } else {
                 $(".resultsText").text("This article is " + data.wing.toUpperCase());
             }
+
+            var wingPercentage = 0;
+            if (data.wingPercentage) {
+                wingPercentage = data.wingPercentage
+            } else {
+                if (data.wing == "left") {
+                    wingPercentage = 25;
+                } else if (data.wing == "right") {
+                    wingPercentage = 75;
+                } else {
+                    wingPercentage = 50;
+                }
+            }
+
+            var g = new JustGage({
+                id: "gauge",
+                value: wingPercentage,
+                min: 0,
+                max: 100,
+                title: "Political Leaning: " + data.wing.charAt(0).toUpperCase() + data.wing.slice(1),
+                hideMinMax: true,
+                levelColors: ["#ff0000", "#00bc16", "#3399ff"]
+            });
 
             if (data.recommendations) {
                 console.log("Recommendations found");
@@ -73,6 +97,7 @@ $(document).ready(function() {
     }
 
     function clearData() {
+        $("#gauge").empty();
         $(".recommendations-table").html("");
         $(".results").css("display", "none");
     }
