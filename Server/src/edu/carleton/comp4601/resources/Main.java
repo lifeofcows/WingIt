@@ -27,7 +27,7 @@ public class Main {
 	WingAnalyzer wingAnalyzer;
 	public static HashMap<String, String> newsSites;
 	private static ArrayDeque<String> siteDeque;
-	private String res;
+	public static String res;
 	private Thread[] threads;
 	static {
 		newsSites = new HashMap<String, String>();
@@ -63,7 +63,7 @@ public class Main {
 			case "reset":
 				crawl();
 				if (res.contains("200")) {
-					train();	
+					train();
 				}
 				break;
 			case "re-train":
@@ -163,7 +163,12 @@ public class Main {
 	}
 	
 	public static String JSONify(String key, String value, boolean wrap) {
-		String json = "\"" + key + "\": \"" + value + "\"";
+		String json = "\"" + key + "\": ";
+		if (value.startsWith("{")) {
+			json += value;
+		} else {
+			json += "\"" + value + "\"";
+		}
 		if (wrap) {
 			return wrapJSON(json);
 		}
@@ -171,13 +176,14 @@ public class Main {
 	}
 	
 	public static String JSONify(String key, List<String> list, boolean wrap) {
-		String json = "\"" + key + "\": \"[";
+		String json = "\"" + key + "\": [";
 		for (int i = 0; i < list.size(); i++) {
 			json += "\"" + list.get(i) + "\"";
 			if (i < list.size() - 1) {
 				json += ", ";
 			}
 		}
+		json += "]";
 		if (wrap) {
 			return wrapJSON(json);
 		}

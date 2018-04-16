@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ArticleRecommender {
 	
-	private static double threshold = 0.3; 
+	private static double threshold = 0.15; 
 	
 	public ArticleRecommender() {
 		
@@ -21,26 +21,29 @@ public class ArticleRecommender {
 			wingArticleUrls.put(wing, new ArrayList<String>());
 		}
 		
-		WebPage queriedArticle = Database.getInstance().getWebPageByURL(url);
-		HashSet<String> queriedWords = new HashSet<String>(Arrays.asList(queriedArticle.getTitle().split(" ")));
+		System.out.println(Crawler.getPageTitle(url));
+		HashSet<String> queriedWords = new HashSet<String>(Arrays.asList(Crawler.getPageTitle(url).split(" ")));
 		ArrayList<WebPage> articles = Database.getInstance().getWebPages();
 		for (WebPage article : articles) {
-			HashSet<String> otherWords = new HashSet<String>(Arrays.asList(article.getTitle().split(" ")));
-			int matchingWords = 0;
-			for (String word : otherWords) {
-				if (queriedWords.contains(word)) {
-					matchingWords++;
+			if (!Main.newsSites.containsKey(article.getUrl())) {
+				HashSet<String> otherWords = new HashSet<String>(Arrays.asList(article.getTitle().split(" ")));
+				int matchingWords = 0;
+				for (String word : otherWords) {
+					if (queriedWords.contains(word)) {
+						matchingWords++;
+					}
 				}
-			}
-			double matchingWordRatio = ((double) matchingWords)/otherWords.size();
-			if (matchingWordRatio >= threshold) {
-				wingArticleUrls.get(article.getWing()).add(article.getUrl());
+				double matchingWordRatio = ((double) matchingWords)/otherWords.size();
+				if (matchingWordRatio >= threshold) {
+					wingArticleUrls.get(article.getWing()).add("<a href=\'" + article.getUrl() + "\'>" + article.getUrl() + "</a>");
+				}	
 			}
 		}
 		
 		String articleRecommendationsByWing = "{";
 		for (String wing : wingArticleUrls.keySet()) {
 			articleRecommendationsByWing += Main.JSONify(wing, wingArticleUrls.get(wing), false) + ", ";
+			System.out.println(articleRecommendationsByWing);
 		}
 		
 		if (articleRecommendationsByWing.length() > 1) {

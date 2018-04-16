@@ -26,7 +26,7 @@ app.get(['/', '/index.html', '/index'], function(req, res) {
 		res.sendFile('index.html', { root: ROOT });
 	} else if (!requestInProgress) {
 		requestInProgress = true;
-		let targetURL = req.query.url;
+		var targetURL = req.query.url;
 		console.log("Request url: " + baseURL + urlPrefix + targetURL);
 		request(baseURL + urlPrefix + targetURL, function(error, response, body) {
 			processResponse(body, res);
@@ -42,7 +42,7 @@ app.get(['/admin.html', '/admin'], function(req, res) {
 		res.sendFile('admin.html', { root: ROOT });
 	} else if (!requestInProgress) {
 		requestInProgress = true;
-		let adminRequest = req.query.adminRequest;
+		var adminRequest = req.query.adminRequest;
 		console.log("Request url: " + baseURL + adminPrefix + adminRequest);
 		request(baseURL + adminPrefix + adminRequest, function(error, response, body) {
 			processResponse(body, res);
@@ -53,16 +53,21 @@ app.get(['/admin.html', '/admin'], function(req, res) {
 });
 
 processResponse = function(body, res) {
-	var result = JSON.parse(body);
-	console.log("Received data for url: " + result);
-	res.setHeader('Content-Type', 'application/json');
-	requestInProgress = false;
-	if (result && result.statusCode) {
-		console.log("Status code: " + result.statusCode);
-		res.send(JSON.stringify(result));
+	if (body) {
+		var result = JSON.parse(body);
+		console.log("Received data for url: " + result);
+		res.setHeader('Content-Type', 'application/json');
+		requestInProgress = false;
+		if (result && result.statusCode) {
+			console.log("Status code: " + result.statusCode);
+			res.send(JSON.stringify(result));
+		} else {
+			console.log("Setting status code: 500");
+			res.send("{\"statusCode\": \"500\"}");
+		}
 	} else {
 		console.log("Setting status code: 500");
-		res.send("{\"statusCode\": \"500\"}");
+			res.send("{\"statusCode\": \"500\"}");
 	}
 }
 
