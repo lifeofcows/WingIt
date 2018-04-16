@@ -3,6 +3,7 @@ package edu.carleton.comp4601.resources;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -31,11 +32,11 @@ public class Recommender {
 	static {
 		newsSites = new HashMap<String, String>();
 		newsSites.put("https://www.vox.com/", WingAnalyzer.left);
-//		newsSites.put("https://www.buzzfeed.com/", WingAnalyzer.left);
+		newsSites.put("https://www.buzzfeed.com/", WingAnalyzer.left);
 		newsSites.put("https://www.economist.com/", WingAnalyzer.neutral);
-//		newsSites.put("https://www.reuters.com/", WingAnalyzer.neutral);
+		newsSites.put("https://www.reuters.com/", WingAnalyzer.neutral);
 		newsSites.put("https://www.infowars.com/", WingAnalyzer.right);
-//		newsSites.put("www.drudgereport.com/", WingAnalyzer.right);
+		newsSites.put("www.drudgereport.com/", WingAnalyzer.right);
 		
 	}
 	private static final int NUM_THREADS = 3;
@@ -66,7 +67,10 @@ public class Recommender {
 					train();	
 				}
 				break;
-			case "analysis":
+			case "re-train":
+				train();
+				break;
+			case "analytics":
 				analysis();
 				break;
 			default:
@@ -161,6 +165,20 @@ public class Recommender {
 	
 	public static String JSONify(String key, String value, boolean wrap) {
 		String json = "\"" + key + "\": \"" + value + "\"";
+		if (wrap) {
+			return wrapJSON(json);
+		}
+		return json;
+	}
+	
+	public static String JSONify(String key, List<String> list, boolean wrap) {
+		String json = "\"" + key + "\": \"[";
+		for (int i = 0; i < list.size(); i++) {
+			json += "\"" + list.get(i) + "\"";
+			if (i < list.size() - 1) {
+				json += ", ";
+			}
+		}
 		if (wrap) {
 			return wrapJSON(json);
 		}

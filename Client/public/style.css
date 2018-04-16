@@ -23,6 +23,10 @@ h1 {
     position: relative;
 }
 
+.recommendations-table {
+    margin-bottom: 50px;
+  }
+
 .wrap {
     display: inline-block;
     width: 80%;
