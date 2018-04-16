@@ -29,13 +29,7 @@ app.get(['/', '/index.html', '/index'], function(req, res) {
 		let targetURL = req.query.url;
 		console.log("Request url: " + baseURL + urlPrefix + targetURL);
 		request(baseURL + urlPrefix + targetURL, function(error, response, body) {
-			if (body && body.statusCode) {
-				console.log("Status code: " + body.statusCode);
-			}
-			console.log("Received data for url: " + body);
-			res.setHeader('Content-Type', 'application/json');
-			requestInProgress = false;
-			res.send(JSON.stringify(body));
+			processResponse(body, res);
 		});
 	} else {
 		console.log("Server request already in progress...");
@@ -51,18 +45,26 @@ app.get(['/admin.html', '/admin'], function(req, res) {
 		let adminRequest = req.query.adminRequest;
 		console.log("Request url: " + baseURL + adminPrefix + adminRequest);
 		request(baseURL + adminPrefix + adminRequest, function(error, response, body) {
-			if (body && body.statusCode) {
-				console.log("Status code: " + body.statusCode);
-			}
-			console.log("Received data for url: " + body);
-			res.setHeader('Content-Type', 'application/json');
-			requestInProgress = false;
-			res.send(JSON.stringify(body));
+			processResponse(body, res);
 		});
 	} else {
 		console.log("Server request already in progress...");
 	}
 });
+
+processResponse = function(body, res) {
+	var result = JSON.parse(body);
+	console.log("Received data for url: " + result);
+	res.setHeader('Content-Type', 'application/json');
+	requestInProgress = false;
+	if (result && result.statusCode) {
+		console.log("Status code: " + result.statusCode);
+		res.send(JSON.stringify(result));
+	} else {
+		console.log("Setting status code: 500");
+		res.send("{\"statusCode\": \"500\"}");
+	}
+}
 
 //send all other static files
 app.use(express.static(ROOT));

@@ -82,12 +82,16 @@ public class WingAnalyzer extends NaiveBayes {
 			//Get wing, then add page to list of pages to crawl
 			String wing = WINGS.get(maxIndex);
 	
+			String recommendations = ArticleRecommender.recommendArticles(url);
+			System.out.println("recommendations are " + recommendations);
 			//Database.getInstance().insert(new WebPage(Crawler.getAndIncrementDocId(), Crawler.getPageTitle(url), url, urlText, wing));
 			
 			keys.add("statusCode");
 			values.add("200");
 			keys.add("wing");
 			values.add(wing);
+			keys.add("recommendations");
+			values.add(recommendations);
 		} catch (Exception e) {
 			e.printStackTrace();
 			keys.add("statusCode");

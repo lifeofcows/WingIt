@@ -3,7 +3,6 @@ package edu.carleton.comp4601.resources;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.UpdateOptions;
 
@@ -59,6 +58,7 @@ public class Database {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public ArrayList<Double> getClassPriors() {
 		FindIterable<Document> result = analyzerCollection.find();
 		Document doc = result.first();
@@ -109,13 +109,11 @@ public class Database {
 	 * Input: the webpage to be deserialized
 	 * Return: the deserialized webpage
 	 */
-	@SuppressWarnings("unchecked")
 	private WebPage deserializeWebPage(Document doc) {
 		int docId = doc.getInteger("docId", -1);
 		String name = doc.getString("name");
 		String url = doc.getString("url");
 		String content = doc.getString("content");
-		String html = doc.getString("html");
 		String wing = doc.getString("wing");
 		return new WebPage(docId, name, url, content, wing);
 	}

@@ -17,6 +17,7 @@ public abstract class NaiveBayes {
 	
 	protected static String stopWordPath = "/Users/maximkuzmenko/Desktop/School/Third Year/First Semester/COMP 4601/WingIt/Server/training/";
 	//protected static String stopWordPath = "/Users/AveryVine/Documents/School/Third Year/COMP4601/eclipse-workspace/COMP4601Assignment2/COMP4601-Assignment2/training/";
+
 	protected ArrayList<String> classes;
 	protected ArrayList<Double> classPriors;
 	protected ArrayList<ArrayList<String>> classTexts;
@@ -27,9 +28,7 @@ public abstract class NaiveBayes {
 	protected static HashSet<String> stopWords;
 	protected int totalClassDocs, totalVocabulary;
 	
-	protected NaiveBayes() {
-		//TODO: pull from database
-	}
+	protected NaiveBayes() {}
 	
 	/*
 	 * Description: this class provides an interface for use of the Naive Bayes algorithm, for various purposes
