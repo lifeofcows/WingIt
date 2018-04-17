@@ -1,6 +1,7 @@
 package edu.carleton.comp4601.resources;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -75,15 +76,15 @@ public class WingAnalyzer extends NaiveBayes {
 	 * Return: an integer representing the number after the "-" if exists; otherwise return 1.
 	 */
 	int getNumberOfDecimalPlaces(BigDecimal bigDecimal) {
-	    String string = bigDecimal.toEngineeringString();
-	    int index = string.indexOf("-");
+	    String str = bigDecimal.toEngineeringString();
+	    int index = str.indexOf("-");
+	    System.out.println(str);
 	    
 	    if (index < 0) {
 	    		return 1;
 	    }
 	    
-	    //System.out.println("number of decimal places is " + string.substring(index + 1, string.length()));
-	    return Integer.parseInt(string.substring(index + 1, string.length()));
+	    return Integer.parseInt(str.substring(index + 1, str.length()));
 	}
 	
 	
@@ -110,7 +111,7 @@ public class WingAnalyzer extends NaiveBayes {
 			BigDecimal scalingFactor = BigDecimal.valueOf(0);
 			int maxIndex = 0;
 			for (int i = 0; i < wingSentiments.size(); i++) {
-				//System.out.println("Wing sentiment for " + WINGS.get(i) + " is " + wingSentiments.get(i).toEngineeringString());
+				System.out.println("Wing sentiment for " + WINGS.get(i) + " is " + wingSentiments.get(i).toEngineeringString());
 				maxIndex = wingSentiments.get(i).compareTo(wingSentiments.get(maxIndex)) == 1 ? i : maxIndex;
 				scalingFactor = scalingFactor.add(wingSentiments.get(i));	
 			}
@@ -122,24 +123,28 @@ public class WingAnalyzer extends NaiveBayes {
 			double total = 0;
 			
 			for (int i = 0; i < wingSentiments.size(); i++) {
+				System.out.println("Scaling: " + wingSentiments.get(i).divide(scalingFactor, MathContext.DECIMAL32));
 				Double result = logOfBase(10, getNumberOfDecimalPlaces(wingSentiments.get(i).divide(scalingFactor, RoundingMode.HALF_UP)));
 				scaledWingSentiments.add(result);
+				System.out.println("Adding: " + result);
 				total += result;
 			}
 			
 			for (int i = 0; i < scaledWingSentiments.size(); i++) {
 				scaledWingSentiments.set(i, scaledWingSentiments.get(i)/total);
+				System.out.println("Scaled: " + scaledWingSentiments.get(i));
 			}
 			
-			double categorySize = ((double) 1)/(wingSentiments.size() - 1);
+			double leanAmount = 0.5;
 			
-			double categoryPosition = 1;
-			double leanAmount = 0;
-			
-			for (Double sentimentValue : scaledWingSentiments) {
-				System.out.println("categoryPosition is " + categoryPosition + " and sentimentValue is " + sentimentValue + " and leanAmount is " + leanAmount);
-				leanAmount += categoryPosition * sentimentValue;
-				categoryPosition -= categorySize;
+			double scaler = (1.0 / (scaledWingSentiments.size() - 1));
+			System.out.println("Scaler is: " + scaler);
+			for (int i = 0; i < scaledWingSentiments.size(); i++) {
+				if (i < (scaledWingSentiments.size() - 1) / 2) {
+					leanAmount += scaler * scaledWingSentiments.get(i);
+				} else if (i > (scaledWingSentiments.size() - 1) / 2) {
+					leanAmount -= scaler * scaledWingSentiments.get(i);
+				}
 			}
 			
 			leanAmount = leanAmount * 100;
